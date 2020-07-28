@@ -56,7 +56,8 @@ Live mode will refresh the screen image roughly once a second. It can be
 activated by checking either:
 * The Live Checkbox in the lower Right.
 * The _Options->Live_ menu item.
-This isn't implemented particularly well, mouse clicks can be lost as a result.
+
+This isn't implemented in a thread-safe way, mouse clicks can be lost as a result.
 Please be patient and submit bug reports as needed. Alternatively only update
 the screen when you need to using the _Mouse Right Click_.
 
