@@ -2,7 +2,7 @@
 A lightweight application that uses the NI-runtime/ SCPI-interface to take
 screen shots of the MSO5000 series oscilloscope.
 
-![Interactive or Advanced Mode](/images/InteractiveMode.png)
+![Interactive or Advanced Mode](/images/InteractiveMode.PNG)
 
 Additionally, basic control of the scope is accomplished through dedicated
 buttons and the touchscreen interface.
@@ -10,11 +10,11 @@ buttons and the touchscreen interface.
 # Installing
 This app relies on the NI runtime available: https://www.ni.com/en-us/support/downloads/drivers/download.ni-visa.html
 
-Other than that requirement, the app is standalone. 
+Other than that requirement, the app is standalone.
 
 
 # Usage
-![Startup Screen](/images/OnStartup.png)
+![Startup Screen](/images/OnStartup.PNG)
 ## Connecting to your scope ( Shortcut: Ctrl+N)
 When starting Scope Snap, you must choose a device to connect to. clicking
 search will attempt to find all USB devices connected to your machine. If only
@@ -27,7 +27,7 @@ connect.
 **Warning: There is currently no checking if your device is a MSO5xxx. This
 could result in unintended side effects.**
 
-![Successfully Connected](/images/OnConnect.png)
+![Successfully Connected](/images/OnConnect.PNG)
 
 ## Saving Images (Shortcut: Ctrl+S)
 Saving the currently shown image can be accomplished in several ways:
