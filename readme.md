@@ -27,6 +27,17 @@ connect.
 **Warning: There is currently no checking if your device is a MSO5xxx. This
 could result in unintended side effects.**
 
+### Connecting over the network
+If your scope is on a network you can still connect to the scope.
+first find your scopes VISA Address in _Utility->IO->LAN_ it should be in the
+form ```TCPIP::192.168.0.100::INSTR``` where the ip in the middle will be the IP
+address of the scope.
+
+Then double click on the grayed out text box to enable editing and paste the
+VISA connection string into the textbox.
+
+finally click connect, now you can control your scope over the network too!
+
 ![Successfully Connected](/images/OnConnect.PNG)
 
 ## Saving Images (Shortcut: Ctrl+S)
