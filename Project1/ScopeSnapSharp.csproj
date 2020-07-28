@@ -98,7 +98,6 @@
     <None Include="App.config" />
     <None Include="Project1_TemporaryKey.pfx" />
     <None Include="Properties\app.manifest" />
-    <None Include="Properties\DataSources\Form1.datasource" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Form1.cs">

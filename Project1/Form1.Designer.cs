@@ -30,6 +30,8 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.tblLayoutButtons = new System.Windows.Forms.TableLayoutPanel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.btnSearch = new System.Windows.Forms.Button();
@@ -50,25 +52,27 @@
             this.pictureOptionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.invertToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.grayscaleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.liveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showButtonsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showRightPanelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.usageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.tblLayoutButtons = new System.Windows.Forms.TableLayoutPanel();
-            this.showButtonsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.liveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showRightPanelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            this.tableLayoutPanel1.SuspendLayout();
-            this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.tableLayoutPanel1.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -92,6 +96,35 @@
             this.splitContainer1.SplitterWidth = 6;
             this.splitContainer1.TabIndex = 1;
             // 
+            // splitContainer2
+            // 
+            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer2.Name = "splitContainer2";
+            // 
+            // splitContainer2.Panel1
+            // 
+            this.splitContainer2.Panel1.Controls.Add(this.tblLayoutButtons);
+            // 
+            // splitContainer2.Panel2
+            // 
+            this.splitContainer2.Panel2.Controls.Add(this.pictureBox1);
+            this.splitContainer2.Size = new System.Drawing.Size(1500, 1065);
+            this.splitContainer2.SplitterDistance = 145;
+            this.splitContainer2.TabIndex = 1;
+            // 
+            // tblLayoutButtons
+            // 
+            this.tblLayoutButtons.ColumnCount = 1;
+            this.tblLayoutButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblLayoutButtons.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tblLayoutButtons.Location = new System.Drawing.Point(0, 0);
+            this.tblLayoutButtons.Name = "tblLayoutButtons";
+            this.tblLayoutButtons.RowCount = 1;
+            this.tblLayoutButtons.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tblLayoutButtons.Size = new System.Drawing.Size(145, 1065);
+            this.tblLayoutButtons.TabIndex = 0;
+            // 
             // pictureBox1
             // 
             this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
@@ -105,6 +138,7 @@
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
+            this.pictureBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseHover);
             // 
             // tableLayoutPanel1
             // 
@@ -118,6 +152,8 @@
             this.tableLayoutPanel1.Controls.Add(this.btnSave, 0, 4);
             this.tableLayoutPanel1.Controls.Add(this.btnGrab, 0, 5);
             this.tableLayoutPanel1.Controls.Add(this.checkBox1, 1, 5);
+            this.tableLayoutPanel1.Controls.Add(this.textBox2, 0, 3);
+            this.tableLayoutPanel1.Controls.Add(this.button1, 1, 3);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -221,10 +257,12 @@
             // statusStrip1
             // 
             this.statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
-            this.statusStrip1.Location = new System.Drawing.Point(0, 1123);
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel1});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 1115);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(2, 0, 21, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(1911, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1911, 30);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -289,7 +327,7 @@
             // 
             this.copyToolStripMenuItem1.Name = "copyToolStripMenuItem1";
             this.copyToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.copyToolStripMenuItem1.Size = new System.Drawing.Size(200, 30);
+            this.copyToolStripMenuItem1.Size = new System.Drawing.Size(252, 30);
             this.copyToolStripMenuItem1.Text = "&Copy";
             this.copyToolStripMenuItem1.Click += new System.EventHandler(this.copyToolStripMenuItem1_Click);
             // 
@@ -324,6 +362,32 @@
             this.grayscaleToolStripMenuItem.Text = "Grayscale";
             this.grayscaleToolStripMenuItem.Click += new System.EventHandler(this.grayscaleToolStripMenuItem_Click);
             // 
+            // liveToolStripMenuItem
+            // 
+            this.liveToolStripMenuItem.CheckOnClick = true;
+            this.liveToolStripMenuItem.Name = "liveToolStripMenuItem";
+            this.liveToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.liveToolStripMenuItem.Text = "Live";
+            this.liveToolStripMenuItem.Click += new System.EventHandler(this.liveToolStripMenuItem_Click);
+            // 
+            // showButtonsToolStripMenuItem
+            // 
+            this.showButtonsToolStripMenuItem.CheckOnClick = true;
+            this.showButtonsToolStripMenuItem.Name = "showButtonsToolStripMenuItem";
+            this.showButtonsToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.showButtonsToolStripMenuItem.Text = "Show Buttons";
+            this.showButtonsToolStripMenuItem.Click += new System.EventHandler(this.showButtonsToolStripMenuItem_Click);
+            // 
+            // showRightPanelToolStripMenuItem
+            // 
+            this.showRightPanelToolStripMenuItem.Checked = true;
+            this.showRightPanelToolStripMenuItem.CheckOnClick = true;
+            this.showRightPanelToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.showRightPanelToolStripMenuItem.Name = "showRightPanelToolStripMenuItem";
+            this.showRightPanelToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.showRightPanelToolStripMenuItem.Text = "Show Right Panel";
+            this.showRightPanelToolStripMenuItem.Click += new System.EventHandler(this.showRightPanelToolStripMenuItem_Click);
+            // 
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -336,71 +400,39 @@
             // usageToolStripMenuItem
             // 
             this.usageToolStripMenuItem.Name = "usageToolStripMenuItem";
-            this.usageToolStripMenuItem.Size = new System.Drawing.Size(146, 30);
+            this.usageToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
             this.usageToolStripMenuItem.Text = "Usage";
             this.usageToolStripMenuItem.Visible = false;
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(146, 30);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
-            // splitContainer2
+            // textBox2
             // 
-            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer2.Name = "splitContainer2";
+            this.textBox2.Location = new System.Drawing.Point(3, 321);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(195, 26);
+            this.textBox2.TabIndex = 10;
             // 
-            // splitContainer2.Panel1
+            // button1
             // 
-            this.splitContainer2.Panel1.Controls.Add(this.tblLayoutButtons);
+            this.button1.Location = new System.Drawing.Point(205, 321);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(168, 26);
+            this.button1.TabIndex = 11;
+            this.button1.Text = "Write";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // splitContainer2.Panel2
+            // toolStripStatusLabel1
             // 
-            this.splitContainer2.Panel2.Controls.Add(this.pictureBox1);
-            this.splitContainer2.Size = new System.Drawing.Size(1500, 1065);
-            this.splitContainer2.SplitterDistance = 145;
-            this.splitContainer2.TabIndex = 1;
-            // 
-            // tblLayoutButtons
-            // 
-            this.tblLayoutButtons.ColumnCount = 1;
-            this.tblLayoutButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblLayoutButtons.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblLayoutButtons.Location = new System.Drawing.Point(0, 0);
-            this.tblLayoutButtons.Name = "tblLayoutButtons";
-            this.tblLayoutButtons.RowCount = 1;
-            this.tblLayoutButtons.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblLayoutButtons.Size = new System.Drawing.Size(145, 1065);
-            this.tblLayoutButtons.TabIndex = 0;
-            // 
-            // showButtonsToolStripMenuItem
-            // 
-            this.showButtonsToolStripMenuItem.CheckOnClick = true;
-            this.showButtonsToolStripMenuItem.Name = "showButtonsToolStripMenuItem";
-            this.showButtonsToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
-            this.showButtonsToolStripMenuItem.Text = "Show Buttons";
-            this.showButtonsToolStripMenuItem.Click += new System.EventHandler(this.showButtonsToolStripMenuItem_Click);
-            // 
-            // liveToolStripMenuItem
-            // 
-            this.liveToolStripMenuItem.CheckOnClick = true;
-            this.liveToolStripMenuItem.Name = "liveToolStripMenuItem";
-            this.liveToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
-            this.liveToolStripMenuItem.Text = "Live";
-            this.liveToolStripMenuItem.Click += new System.EventHandler(this.liveToolStripMenuItem_Click);
-            // 
-            // showRightPanelToolStripMenuItem
-            // 
-            this.showRightPanelToolStripMenuItem.Checked = true;
-            this.showRightPanelToolStripMenuItem.CheckOnClick = true;
-            this.showRightPanelToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.showRightPanelToolStripMenuItem.Name = "showRightPanelToolStripMenuItem";
-            this.showRightPanelToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
-            this.showRightPanelToolStripMenuItem.Text = "Show Right Panel";
-            this.showRightPanelToolStripMenuItem.Click += new System.EventHandler(this.showRightPanelToolStripMenuItem_Click);
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(179, 25);
+            this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
             // 
             // Form1
             // 
@@ -420,15 +452,17 @@
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -465,5 +499,8 @@
         private System.Windows.Forms.ToolStripMenuItem showButtonsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem liveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showRightPanelToolStripMenuItem;
+        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
     }
 }

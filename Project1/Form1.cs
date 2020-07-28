@@ -83,7 +83,9 @@ namespace ScopeSnapSharp
             t.Tick += T_Tick;
             SetupControlState(false);
             FailCount = 0;
-            
+            textBox2.Visible = false;
+            button1.Visible = false;
+
         }
 
 
@@ -635,6 +637,20 @@ namespace ScopeSnapSharp
         private void showRightPanelToolStripMenuItem_Click(object sender, EventArgs e)
         {
             splitContainer1.Panel2Collapsed = !(sender as ToolStripMenuItem).Checked;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            mbSession.RawIO.Write(textBox2.Text);
+        }
+
+        
+
+        private void pictureBox1_MouseHover(object sender, MouseEventArgs e)
+        {
+            int myX, myY;
+            convertCoordinates(e.X, e.Y, out myX, out myY);
+            toolStripStatusLabel1.Text = String.Format("Position:({0}, {1})", myX,myY);
         }
     }
 }
