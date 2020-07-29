@@ -142,8 +142,12 @@ namespace ScopeSnapSharp
                 catch ( Exception ex)
                 {
                     FailCount++;
-                    if (FailCount>5)
+                    if (FailCount > 5)
+                    {
                         MessageBox.Show(ex.Message);
+                        SetupControlState(false);
+                        mbSession.Dispose();
+                    }
                 }
             }
             t.Enabled = true;
