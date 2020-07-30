@@ -83,9 +83,7 @@ namespace ScopeSnapSharp
             t.Tick += T_Tick;
             SetupControlState(false);
             FailCount = 0;
-            textBox2.Visible = false;
-            button1.Visible = false;
-
+            
         }
 
 
@@ -109,13 +107,12 @@ namespace ScopeSnapSharp
                     tblLayoutButtons.Controls.Add(b,0,i);
                     i++;
                 }
-                //Panel fake = new Panel();
-                //fake.Dock = DockStyle.Fill;
-                //tblLayoutButtons.Controls.Add(fake, 0, QuickList.Count);
+                
 
                 tblLayoutButtons.ResumeLayout();
                 tblLayoutButtons.Width = 80;
                 splitContainer2.Panel1Collapsed = true;
+                tblLayoutAdvanced.Visible = advancedPanelToolStripMenuItem.Checked;
             }
             catch (Exception ex)
             {
@@ -643,10 +640,7 @@ namespace ScopeSnapSharp
             splitContainer1.Panel2Collapsed = !(sender as ToolStripMenuItem).Checked;
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            mbSession.RawIO.Write(textBox2.Text);
-        }
+        
 
         
 
@@ -655,6 +649,39 @@ namespace ScopeSnapSharp
             int myX, myY;
             convertCoordinates(e.X, e.Y, out myX, out myY);
             toolStripStatusLabel1.Text = String.Format("Position:({0}, {1})", myX,myY);
+        }
+
+        private void advancedPanelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            tblLayoutAdvanced.Visible = advancedPanelToolStripMenuItem.Checked;
+            if (advancedPanelToolStripMenuItem.Checked == true)
+            {
+                splitContainer1.Panel2Collapsed = false;
+                showRightPanelToolStripMenuItem.Checked=true;
+            }
+        }
+
+        private void cmdReadSCPI_Click(object sender, EventArgs e)
+        {
+            if (mbSession == null || mbSession.IsDisposed) return;
+            try
+            {
+                txtSCPIresponse.Text = "";
+                txtSCPIresponse.Text = mbSession.RawIO.ReadString();
+            }
+            catch (Ivi.Visa.IOTimeoutException ex)
+            {
+                txtSCPIresponse.Text = "Read Timed Out";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (mbSession == null || mbSession.IsDisposed) return;
+            mbSession.RawIO.Write(txtSCPIcmd.Text);
         }
     }
 }

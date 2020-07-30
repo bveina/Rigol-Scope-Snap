@@ -58,9 +58,13 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.usageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.cmdWriteSCPI = new System.Windows.Forms.Button();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.txtSCPIresponse = new System.Windows.Forms.TextBox();
+            this.cmdReadSCPI = new System.Windows.Forms.Button();
+            this.tblLayoutAdvanced = new System.Windows.Forms.TableLayoutPanel();
+            this.advancedPanelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.txtSCPIcmd = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -73,6 +77,7 @@
             this.tableLayoutPanel1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            this.tblLayoutAdvanced.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -91,8 +96,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tableLayoutPanel1);
-            this.splitContainer1.Size = new System.Drawing.Size(1911, 1065);
-            this.splitContainer1.SplitterDistance = 1500;
+            this.splitContainer1.Size = new System.Drawing.Size(2223, 1162);
+            this.splitContainer1.SplitterDistance = 1613;
             this.splitContainer1.SplitterWidth = 6;
             this.splitContainer1.TabIndex = 1;
             // 
@@ -109,8 +114,8 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.pictureBox1);
-            this.splitContainer2.Size = new System.Drawing.Size(1500, 1065);
-            this.splitContainer2.SplitterDistance = 145;
+            this.splitContainer2.Size = new System.Drawing.Size(1613, 1162);
+            this.splitContainer2.SplitterDistance = 111;
             this.splitContainer2.TabIndex = 1;
             // 
             // tblLayoutButtons
@@ -122,7 +127,7 @@
             this.tblLayoutButtons.Name = "tblLayoutButtons";
             this.tblLayoutButtons.RowCount = 1;
             this.tblLayoutButtons.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblLayoutButtons.Size = new System.Drawing.Size(145, 1065);
+            this.tblLayoutButtons.Size = new System.Drawing.Size(111, 1162);
             this.tblLayoutButtons.TabIndex = 0;
             // 
             // pictureBox1
@@ -133,7 +138,7 @@
             this.pictureBox1.Location = new System.Drawing.Point(0, 0);
             this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(1351, 1065);
+            this.pictureBox1.Size = new System.Drawing.Size(1498, 1162);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
@@ -149,23 +154,24 @@
             this.tableLayoutPanel1.Controls.Add(this.textBox1, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.btnConnect, 1, 2);
             this.tableLayoutPanel1.Controls.Add(this.listBox1, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btnSave, 0, 4);
-            this.tableLayoutPanel1.Controls.Add(this.btnGrab, 0, 5);
-            this.tableLayoutPanel1.Controls.Add(this.checkBox1, 1, 5);
-            this.tableLayoutPanel1.Controls.Add(this.textBox2, 0, 3);
-            this.tableLayoutPanel1.Controls.Add(this.button1, 1, 3);
+            this.tableLayoutPanel1.Controls.Add(this.btnSave, 0, 6);
+            this.tableLayoutPanel1.Controls.Add(this.btnGrab, 0, 7);
+            this.tableLayoutPanel1.Controls.Add(this.checkBox1, 1, 7);
+            this.tableLayoutPanel1.Controls.Add(this.tblLayoutAdvanced, 0, 4);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 6;
+            this.tableLayoutPanel1.RowCount = 8;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 46F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 66.66667F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 92F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 46F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(405, 1065);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(604, 1162);
             this.tableLayoutPanel1.TabIndex = 5;
             // 
             // btnSearch
@@ -174,7 +180,7 @@
             this.btnSearch.Location = new System.Drawing.Point(4, 277);
             this.btnSearch.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnSearch.Name = "btnSearch";
-            this.btnSearch.Size = new System.Drawing.Size(194, 36);
+            this.btnSearch.Size = new System.Drawing.Size(294, 36);
             this.btnSearch.TabIndex = 1;
             this.btnSearch.Text = "Search";
             this.btnSearch.UseVisualStyleBackColor = true;
@@ -188,17 +194,17 @@
             this.textBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(397, 26);
+            this.textBox1.Size = new System.Drawing.Size(596, 26);
             this.textBox1.TabIndex = 4;
             this.textBox1.DoubleClick += new System.EventHandler(this.textBox1_DoubleClick);
             // 
             // btnConnect
             // 
             this.btnConnect.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnConnect.Location = new System.Drawing.Point(206, 277);
+            this.btnConnect.Location = new System.Drawing.Point(306, 277);
             this.btnConnect.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnConnect.Name = "btnConnect";
-            this.btnConnect.Size = new System.Drawing.Size(195, 36);
+            this.btnConnect.Size = new System.Drawing.Size(294, 36);
             this.btnConnect.TabIndex = 6;
             this.btnConnect.Text = "Connect";
             this.btnConnect.UseVisualStyleBackColor = true;
@@ -213,7 +219,7 @@
             this.listBox1.Location = new System.Drawing.Point(4, 5);
             this.listBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(397, 226);
+            this.listBox1.Size = new System.Drawing.Size(596, 226);
             this.listBox1.TabIndex = 2;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
@@ -221,10 +227,10 @@
             // 
             this.tableLayoutPanel1.SetColumnSpan(this.btnSave, 2);
             this.btnSave.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnSave.Location = new System.Drawing.Point(4, 932);
+            this.btnSave.Location = new System.Drawing.Point(4, 1028);
             this.btnSave.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(397, 82);
+            this.btnSave.Size = new System.Drawing.Size(596, 82);
             this.btnSave.TabIndex = 7;
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
@@ -233,10 +239,10 @@
             // btnGrab
             // 
             this.btnGrab.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnGrab.Location = new System.Drawing.Point(4, 1024);
+            this.btnGrab.Location = new System.Drawing.Point(4, 1120);
             this.btnGrab.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnGrab.Name = "btnGrab";
-            this.btnGrab.Size = new System.Drawing.Size(194, 36);
+            this.btnGrab.Size = new System.Drawing.Size(294, 37);
             this.btnGrab.TabIndex = 8;
             this.btnGrab.Text = "Grab";
             this.btnGrab.UseVisualStyleBackColor = true;
@@ -245,7 +251,7 @@
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(206, 1024);
+            this.checkBox1.Location = new System.Drawing.Point(306, 1120);
             this.checkBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(108, 24);
@@ -259,10 +265,10 @@
             this.statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 1115);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 1212);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(2, 0, 21, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(1911, 30);
+            this.statusStrip1.Size = new System.Drawing.Size(2223, 30);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -277,7 +283,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(9, 3, 0, 3);
-            this.menuStrip1.Size = new System.Drawing.Size(1911, 35);
+            this.menuStrip1.Size = new System.Drawing.Size(2223, 35);
             this.menuStrip1.TabIndex = 3;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -338,7 +344,8 @@
             this.grayscaleToolStripMenuItem,
             this.liveToolStripMenuItem,
             this.showButtonsToolStripMenuItem,
-            this.showRightPanelToolStripMenuItem});
+            this.showRightPanelToolStripMenuItem,
+            this.advancedPanelToolStripMenuItem});
             this.pictureOptionsToolStripMenuItem.Name = "pictureOptionsToolStripMenuItem";
             this.pictureOptionsToolStripMenuItem.Size = new System.Drawing.Size(88, 29);
             this.pictureOptionsToolStripMenuItem.Text = "Options";
@@ -411,22 +418,15 @@
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
-            // textBox2
+            // cmdWriteSCPI
             // 
-            this.textBox2.Location = new System.Drawing.Point(3, 321);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(195, 26);
-            this.textBox2.TabIndex = 10;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(205, 321);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(168, 26);
-            this.button1.TabIndex = 11;
-            this.button1.Text = "Write";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.cmdWriteSCPI.Location = new System.Drawing.Point(5, 82);
+            this.cmdWriteSCPI.Name = "cmdWriteSCPI";
+            this.cmdWriteSCPI.Size = new System.Drawing.Size(290, 31);
+            this.cmdWriteSCPI.TabIndex = 15;
+            this.cmdWriteSCPI.Text = "Write";
+            this.cmdWriteSCPI.UseVisualStyleBackColor = true;
+            this.cmdWriteSCPI.Click += new System.EventHandler(this.button1_Click);
             // 
             // toolStripStatusLabel1
             // 
@@ -434,11 +434,76 @@
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(179, 25);
             this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
             // 
+            // txtSCPIresponse
+            // 
+            this.txtSCPIresponse.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tblLayoutAdvanced.SetColumnSpan(this.txtSCPIresponse, 2);
+            this.txtSCPIresponse.Location = new System.Drawing.Point(12, 130);
+            this.txtSCPIresponse.Margin = new System.Windows.Forms.Padding(10);
+            this.txtSCPIresponse.Multiline = true;
+            this.txtSCPIresponse.Name = "txtSCPIresponse";
+            this.txtSCPIresponse.ReadOnly = true;
+            this.txtSCPIresponse.Size = new System.Drawing.Size(574, 80);
+            this.txtSCPIresponse.TabIndex = 12;
+            // 
+            // cmdReadSCPI
+            // 
+            this.cmdReadSCPI.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdReadSCPI.Location = new System.Drawing.Point(307, 82);
+            this.cmdReadSCPI.Name = "cmdReadSCPI";
+            this.cmdReadSCPI.Size = new System.Drawing.Size(286, 31);
+            this.cmdReadSCPI.TabIndex = 16;
+            this.cmdReadSCPI.Text = "Read";
+            this.cmdReadSCPI.UseVisualStyleBackColor = true;
+            this.cmdReadSCPI.Click += new System.EventHandler(this.cmdReadSCPI_Click);
+            // 
+            // tblLayoutAdvanced
+            // 
+            this.tblLayoutAdvanced.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Outset;
+            this.tblLayoutAdvanced.ColumnCount = 2;
+            this.tableLayoutPanel1.SetColumnSpan(this.tblLayoutAdvanced, 2);
+            this.tblLayoutAdvanced.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tblLayoutAdvanced.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tblLayoutAdvanced.Controls.Add(this.txtSCPIcmd, 0, 0);
+            this.tblLayoutAdvanced.Controls.Add(this.cmdReadSCPI, 1, 1);
+            this.tblLayoutAdvanced.Controls.Add(this.cmdWriteSCPI, 0, 1);
+            this.tblLayoutAdvanced.Controls.Add(this.txtSCPIresponse, 1, 2);
+            this.tblLayoutAdvanced.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tblLayoutAdvanced.Location = new System.Drawing.Point(3, 341);
+            this.tblLayoutAdvanced.Name = "tblLayoutAdvanced";
+            this.tblLayoutAdvanced.RowCount = 3;
+            this.tblLayoutAdvanced.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 75F));
+            this.tblLayoutAdvanced.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tblLayoutAdvanced.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tblLayoutAdvanced.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tblLayoutAdvanced.Size = new System.Drawing.Size(598, 222);
+            this.tblLayoutAdvanced.TabIndex = 10;
+            // 
+            // advancedPanelToolStripMenuItem
+            // 
+            this.advancedPanelToolStripMenuItem.CheckOnClick = true;
+            this.advancedPanelToolStripMenuItem.Name = "advancedPanelToolStripMenuItem";
+            this.advancedPanelToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.advancedPanelToolStripMenuItem.Text = "Advanced Panel";
+            this.advancedPanelToolStripMenuItem.Click += new System.EventHandler(this.advancedPanelToolStripMenuItem_Click);
+            // 
+            // txtSCPIcmd
+            // 
+            this.tblLayoutAdvanced.SetColumnSpan(this.txtSCPIcmd, 2);
+            this.txtSCPIcmd.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtSCPIcmd.Location = new System.Drawing.Point(5, 5);
+            this.txtSCPIcmd.Multiline = true;
+            this.txtSCPIcmd.Name = "txtSCPIcmd";
+            this.txtSCPIcmd.Size = new System.Drawing.Size(588, 69);
+            this.txtSCPIcmd.TabIndex = 14;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1911, 1145);
+            this.ClientSize = new System.Drawing.Size(2223, 1242);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.splitContainer1);
@@ -463,6 +528,8 @@
             this.statusStrip1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.tblLayoutAdvanced.ResumeLayout(false);
+            this.tblLayoutAdvanced.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -499,8 +566,12 @@
         private System.Windows.Forms.ToolStripMenuItem showButtonsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem liveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showRightPanelToolStripMenuItem;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button cmdWriteSCPI;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.Button cmdReadSCPI;
+        private System.Windows.Forms.TextBox txtSCPIresponse;
+        private System.Windows.Forms.TableLayoutPanel tblLayoutAdvanced;
+        private System.Windows.Forms.ToolStripMenuItem advancedPanelToolStripMenuItem;
+        private System.Windows.Forms.TextBox txtSCPIcmd;
     }
 }
