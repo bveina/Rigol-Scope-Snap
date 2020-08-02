@@ -681,7 +681,12 @@ namespace ScopeSnapSharp
         private void button1_Click(object sender, EventArgs e)
         {
             if (mbSession == null || mbSession.IsDisposed) return;
-            mbSession.RawIO.Write(txtSCPIcmd.Text);
+            string[] arr = txtSCPIcmd.Text.Split(new char[]{ '\r','\n'},StringSplitOptions.RemoveEmptyEntries);
+            foreach (var line in arr)
+            {
+                mbSession.RawIO.Write(line);
+            }
+            
         }
     }
 }
