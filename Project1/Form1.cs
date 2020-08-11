@@ -726,20 +726,10 @@ namespace ScopeSnapSharp
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (ApplicationDeployment.IsNetworkDeployed)
-            {
-                Version currentVersion = ApplicationDeployment.CurrentDeployment.CurrentVersion;
-
-                string AppString = "Scope Snap Sharp";
-                string versionString = currentVersion.ToString(4);
-                string credits = "logo: \"Oscilloscope\" by Filter Forge is licensed under CC BY 2.0";
-                MessageBox.Show(String.Format("{0}\r\n(c) Ben Viall\r\nVersion: {1}\r\n\r\n",AppString, versionString,credits),"About");
-            }
-            else
-            {
-                MessageBox.Show("Debug Version","About");
-
-            }
+            string AppString = "Scope Snap Sharp";
+            string versionString = Application.ProductVersion;
+            string credits = "logo: \"Oscilloscope\" by Filter Forge is licensed under CC BY 2.0";
+            MessageBox.Show(String.Format("{0}\r\n(c) Ben Viall\r\nVersion: {1}\r\n\r\n",AppString, versionString,credits),"About");
             
         }
 
