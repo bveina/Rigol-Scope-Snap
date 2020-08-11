@@ -62,7 +62,7 @@ The mouse can be used to interact with the Scope in several ways.
 2. Right Clicking on the image will cause a new image to be retrieved from the Scope.
 3. Users can use the Soft Keys described in the options menu section.
 
-## Live Mode (unstable)
+## Live Mode 
 Live mode will refresh the screen image roughly once a second. It can be
 activated by checking either:
 * The Live Checkbox in the lower Right.
