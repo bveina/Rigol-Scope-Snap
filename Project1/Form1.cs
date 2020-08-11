@@ -26,6 +26,7 @@ namespace ScopeSnapSharp
         private bool Connected;
         private int FailCount;
         private bool _live;
+        Size LastPicSize = new Size(0, 0);
 
         public BindingList<string> resourceList { get; set; }
 
@@ -113,12 +114,93 @@ namespace ScopeSnapSharp
 
         private void ImageGrabber_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            throw new NotImplementedException();
+            toolStripProgressBar1.Style = ProgressBarStyle.Continuous;
+            toolStripProgressBar1.Value = 0;
+
+            if (e.Result == null)
+            {
+                FailCount++;
+                if (FailCount > 5)
+                {
+                    SetupControlState(false);
+                    MessageBox.Show("There was a problem while grabbbing an image, please reconnect to the Scope");
+                }
+                return;
+
+            }
+            PictureBox pb = (e.Result as PictureBox);
+            if (pb.Image != null)
+            {
+                pb.Image.Dispose();
+            }
+            pb.Image = model;
+            FailCount = 0;
+            
         }
 
         private void ImageGrabber_DoWork(object sender, DoWorkEventArgs e)
         {
-            throw new NotImplementedException();
+            
+            
+            if (mbSession == null || mbSession.IsDisposed) return;
+            mbSession.LockResource();
+            // update save options
+            
+            string s;
+            try
+            {
+                mbSession.RawIO.Write(":SAVE:IMAGE:INVERT?");
+                s = mbSession.FormattedIO.ReadLine();
+            }
+            catch (Ivi.Visa.VisaException ex)
+            {
+                e.Result = null;
+                return;
+            }
+            finally
+            {
+                mbSession.UnlockResource();
+            }
+            if (s.Trim() == "1")
+                invertToolStripMenuItem.Checked = true;
+
+            mbSession.LockResource();
+            
+            try
+            {
+                mbSession.RawIO.Write(":SAVE:IMAGE:COLOR?");
+                s = mbSession.FormattedIO.ReadLine();
+            }
+            catch (Ivi.Visa.VisaException ex)
+            {
+                e.Result = null;
+                return;
+            }
+            finally
+            {
+                mbSession.UnlockResource();
+            }
+
+            if (s.Trim() == "GRAY")
+                grayscaleToolStripMenuItem.Checked = true;
+
+
+            lastPacket = getImage();
+            
+            if (lastPacket == null)
+            {
+                e.Result = null;
+                return; // something broke. fail silently.
+            }
+            
+            MemoryStream ms = new MemoryStream();
+            ms.Write(lastPacket, 0, Convert.ToInt32(lastPacket.Length));
+            if (model != null)
+            {
+                model.Dispose();
+            }
+            model = new Bitmap(ms, false);
+            e.Result = e.Argument;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -164,12 +246,13 @@ namespace ScopeSnapSharp
         {
             
             t.Enabled = false;
+            if (mbSession == null || mbSession.IsDisposed) return;
             if (this.Live)
             {
                 try
                 {
                     updateScreen(pictureBox1);
-                    FailCount = 0;
+                    //FailCount = 0;
                 }
                 catch ( Exception ex)
                 {
@@ -287,6 +370,11 @@ namespace ScopeSnapSharp
             toolStripProgressBar1.Style = ProgressBarStyle.Continuous;
             resourceList.Clear();
             resourceList.RaiseListChangedEvents = true;
+            if (e.Result == null)
+            {
+                setMessage("could not find any instruments, check connections and try again.");
+                return;
+            }
             foreach (string s in (e.Result as List<string>))
             {
                 resourceList.Add(s);
@@ -296,7 +384,8 @@ namespace ScopeSnapSharp
             
             if (resourceList.Count == 1)
             {
-                //listBox1.SelectedIndex = 0;
+                listBox1.SelectedIndex = 0;
+                textBox1.Text = (string)resourceList[0];
                 setMessage("One Instrument Found.");
                 connect((string)resourceList[0]);
             }
@@ -519,14 +608,16 @@ namespace ScopeSnapSharp
             }
             catch (Ivi.Visa.IOTimeoutException)
             {
+                return null;
                 MessageBox.Show("Scope Stopped Responding, is it on and plugged in?", "TMC packet Error");
-                SetupControlState(false);
+                //SetupControlState(false);
                 mbSession.Dispose();
             }
             catch (Exception exp)
             {
+                return null;
                 MessageBox.Show(exp.Message,"TMC packet Error");
-                SetupControlState(false);
+                //SetupControlState(false);
                 mbSession.Dispose();
             }
             finally
@@ -538,7 +629,14 @@ namespace ScopeSnapSharp
 
         private void updateScreen(PictureBox pb)
         {
-            
+            toolStripProgressBar1.Style = ProgressBarStyle.Marquee;
+            if (ImageGrabber.IsBusy) return;
+            ImageGrabber.RunWorkerAsync(pb);
+        }
+
+        private void updateScreenOld(PictureBox pb)
+        {
+            toolStripProgressBar1.Style = ProgressBarStyle.Marquee;
             if (mbSession==null || mbSession.IsDisposed) return;
             mbSession.LockResource();
             // update save options
@@ -555,6 +653,7 @@ namespace ScopeSnapSharp
 
             lastPacket = getImage();
             mbSession.UnlockResource();
+            toolStripProgressBar1.Style = ProgressBarStyle.Continuous;
             if (lastPacket == null) return; // something broke. fail silently.
             MemoryStream ms = new MemoryStream();
             ms.Write(lastPacket, 0, Convert.ToInt32(lastPacket.Length));
@@ -614,7 +713,24 @@ namespace ScopeSnapSharp
             if (pictureBox1.Image == null) return;
 
             Size boxSize = pictureBox1.Size;
-            Size picSize = pictureBox1.Image.Size;
+            Size picSize;
+            try
+            {
+                if (LastPicSize.Height !=0)
+                {
+                    picSize = LastPicSize;
+                }
+                else
+                {
+                    picSize = pictureBox1.Image.Size;
+                    LastPicSize = picSize;
+                }
+            }
+            catch ( ArgumentException ex)
+            {
+                return;
+            }
+
 
             double boxRatio = (double)boxSize.Height / boxSize.Width;
             double picRatio = (double)picSize.Height / picSize.Width;
@@ -786,8 +902,16 @@ namespace ScopeSnapSharp
         private void pictureBox1_MouseHover(object sender, MouseEventArgs e)
         {
             int myX, myY;
-            convertCoordinates(e.X, e.Y, out myX, out myY);
-            toolStripStatusLabel1.Text = String.Format("Position:({0}, {1})", myX,myY);
+            try
+            {
+                convertCoordinates(e.X, e.Y, out myX, out myY);
+                toolStripStatusLabel1.Text = String.Format("Position:({0}, {1})", myX, myY);
+            }
+            catch  (Exception ex)
+            {
+                //ignore
+            }
+
         }
 
         private void advancedPanelToolStripMenuItem_Click(object sender, EventArgs e)
@@ -820,6 +944,8 @@ namespace ScopeSnapSharp
         private void button1_Click(object sender, EventArgs e)
         {
             if (mbSession == null || mbSession.IsDisposed) return;
+            if (mbSession.ResourceLockState == Ivi.Visa.ResourceLockState.ExclusiveLock)
+                setMessage("locked!!");
             mbSession.LockResource();
             string[] arr = txtSCPIcmd.Text.Split(new char[]{ '\r','\n'},StringSplitOptions.RemoveEmptyEntries);
             foreach (var line in arr)
