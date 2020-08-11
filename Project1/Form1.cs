@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Deployment.Application;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -11,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NationalInstruments.Visa;
-
+using ScopeSnapSharp.Properties;
 
 namespace ScopeSnapSharp
 {
@@ -25,7 +26,9 @@ namespace ScopeSnapSharp
         private bool Connected;
         private int FailCount;
         private bool _live;
-        
+
+        public BindingList<string> resourceList { get; set; }
+
         public bool Live { get
             {
                 return _live;
@@ -75,6 +78,9 @@ namespace ScopeSnapSharp
             Application.Run(new Form1());
         }
 
+
+        BackgroundWorker ImageGrabber;
+
         public Form1()
         {
             InitializeComponent();
@@ -83,12 +89,41 @@ namespace ScopeSnapSharp
             t.Tick += T_Tick;
             SetupControlState(false);
             FailCount = 0;
+
+
+            ImageGrabber = new BackgroundWorker();
+            ImageGrabber.DoWork += ImageGrabber_DoWork;
+            ImageGrabber.RunWorkerCompleted += ImageGrabber_RunWorkerCompleted;
+            ImageGrabber.ProgressChanged += ImageGrabber_ProgressChanged;
+            ImageGrabber.WorkerReportsProgress = true;
+
+            // setup data bindind for the Instrument Listbox
+            this.resourceList = new BindingList<string>();
+            this.listBox1.DataSource = resourceList;
+            Application.EnableVisualStyles();
             
+
+
         }
 
+        private void ImageGrabber_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ImageGrabber_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ImageGrabber_DoWork(object sender, DoWorkEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            
             try
             {
                 tblLayoutButtons.SuspendLayout();
@@ -153,14 +188,51 @@ namespace ScopeSnapSharp
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            SearchConnections();
+            //SearchConnections();
+            beginSearchConnections();
         }
 
+        private void setMessage(string s)
+        {
+            toolstripLabelMessage.Text = String.Format("Message: {0}", s);
+        }
+
+
+        private void beginSearchConnections()
+        {
+            if (listBox1.Items.Contains(textBox1.Text))
+            {
+                textBox1.Text = "";
+            }
+            //listBox1.Items.Clear();
+
+            textBox1.ReadOnly = true;
+            Cursor.Current = Cursors.WaitCursor;
+            setMessage("Finding Instruments");
+
+            BackgroundWorker find = new BackgroundWorker();
+            find.WorkerReportsProgress = true;
+            find.DoWork += Find_DoWork;
+            find.RunWorkerCompleted += Find_RunWorkerCompleted;
+            find.ProgressChanged += Find_ProgressChanged;
+            toolStripProgressBar1.Style = ProgressBarStyle.Marquee;
+            find.RunWorkerAsync();
+        }
+
+        private void Find_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            toolStripProgressBar1.Value = e.ProgressPercentage;
+            setMessage(e.UserState as string);
+        }
+
+        
+        /*
         private void SearchConnections()
         {
-            
+
             // if there is a manual string provided, leave it in the textbox.
             // otherwise erase it.
+            
             if (listBox1.Items.Contains( textBox1.Text))
             {
                 textBox1.Text = "";
@@ -173,7 +245,7 @@ namespace ScopeSnapSharp
                 //var resources = rmSession.Find("(ASRL|GPIB|TCPIP|USB)?*");
                 try
                 {
-                    var resources = rmSession.Find("(GPIB|TCPIP|USB)?*");
+                    var resources = rmSession.Find(Resources.SCPISearchString);
 
                     foreach (string s in resources)
                     {
@@ -182,11 +254,15 @@ namespace ScopeSnapSharp
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message,"Could not find Any Instruments!");
+                    setMessage("Error - Could Not Find Any Instruments.");
+                    Cursor.Current = Cursors.Default;
                     return;
                     
                 }
             }
+            Cursor.Current = Cursors.Default;
+            setMessage("Instrument(s) Found!");
+
             if (listBox1.Items.Count == 1)
             {
                 listBox1.SelectedIndex = 0;
@@ -200,7 +276,71 @@ namespace ScopeSnapSharp
             {
                 // this will probably never happen since it should be caught by the above try block.
                 // TODO: run code coverege and see if this can be refactored
-                MessageBox.Show("could not find any lab equipment, check your connections?","Error Connecting");
+                //MessageBox.Show("could not find any lab equipment, check your connections?","Error Connecting");
+                setMessage("No Instruments Found.");
+            }
+        }
+        */
+        private void Find_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            toolStripProgressBar1.Value =0 ;
+            toolStripProgressBar1.Style = ProgressBarStyle.Continuous;
+            resourceList.Clear();
+            resourceList.RaiseListChangedEvents = true;
+            foreach (string s in (e.Result as List<string>))
+            {
+                resourceList.Add(s);
+                    
+            }
+            
+            
+            if (resourceList.Count == 1)
+            {
+                //listBox1.SelectedIndex = 0;
+                setMessage("One Instrument Found.");
+                connect((string)resourceList[0]);
+            }
+            else if (resourceList.Count != 0)
+            {
+                setMessage("Multiple Instruments Found, Please Select one and click connect.");
+                //listBox1.SelectedIndex = 0;
+            }
+            else
+            {
+                // this will probably never happen since it should be caught by the above try block.
+                // TODO: run code coverege and see if this can be refactored
+                //MessageBox.Show("could not find any lab equipment, check your connections?","Error Connecting");
+                setMessage("No Instruments Found.");
+            }
+        }
+
+        private void Find_DoWork(object sender, DoWorkEventArgs e)
+        {
+
+            (sender as BackgroundWorker).ReportProgress(0, "Searchign - getting session.");
+            using (var rmSession = new ResourceManager())
+            {
+                
+                //var resources = rmSession.Find("(ASRL|GPIB|TCPIP|USB)?*");
+                try
+                {
+                    (sender as BackgroundWorker).ReportProgress(50, "Searching - finding Items.");
+                    var resources = rmSession.Find(Resources.SCPISearchString);
+
+                    e.Result = resources.ToList();
+                    /*foreach (string s in resources)
+                    {
+                        listBox1.Items.Add(s);
+                    }
+                    */
+                }
+                catch (Exception ex)
+                {
+                    (sender as BackgroundWorker).ReportProgress(0, "Error - Could Not Find Any Instruments.");
+                    Cursor.Current = Cursors.Default;
+                    return;
+
+                }
             }
         }
 
@@ -276,6 +416,8 @@ namespace ScopeSnapSharp
                 MessageBox.Show("Choose search, then select an item from the list", "No Resouce Selected");
                 return;
             }
+            Cursor.Current = Cursors.WaitCursor;
+            setMessage("Connecting to "+res);
 
             using (var rmSession = new ResourceManager())
             {
@@ -284,6 +426,7 @@ namespace ScopeSnapSharp
                     mbSession = (MessageBasedSession)rmSession.Open(res);
                     SetupControlState(true);
                     mbSession.RawIO.Write(":SAVE:IMAGE:INVERT ON");
+                    setMessage("Connected to " + res);
                     updateScreen(pictureBox1);
                     
                 }
@@ -293,8 +436,13 @@ namespace ScopeSnapSharp
                 }
                 catch (Exception exp)
                 {
+                    
                     MessageBox.Show(exp.Message, "Connect Error");
                     //TODO: log this error
+                }
+                finally
+                {
+                    Cursor.Current = Cursors.Default;
                 }
             }
         }
@@ -392,7 +540,7 @@ namespace ScopeSnapSharp
         {
             
             if (mbSession==null || mbSession.IsDisposed) return;
-
+            mbSession.LockResource();
             // update save options
             mbSession.RawIO.Write(":SAVE:IMAGE:INVERT?");
             string s = mbSession.FormattedIO.ReadLine();
@@ -406,6 +554,7 @@ namespace ScopeSnapSharp
 
 
             lastPacket = getImage();
+            mbSession.UnlockResource();
             if (lastPacket == null) return; // something broke. fail silently.
             MemoryStream ms = new MemoryStream();
             ms.Write(lastPacket, 0, Convert.ToInt32(lastPacket.Length));
@@ -572,7 +721,7 @@ namespace ScopeSnapSharp
 
         private void newConnectionToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SearchConnections();
+            beginSearchConnections();
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -681,12 +830,19 @@ namespace ScopeSnapSharp
         private void button1_Click(object sender, EventArgs e)
         {
             if (mbSession == null || mbSession.IsDisposed) return;
+            mbSession.LockResource();
             string[] arr = txtSCPIcmd.Text.Split(new char[]{ '\r','\n'},StringSplitOptions.RemoveEmptyEntries);
             foreach (var line in arr)
             {
                 mbSession.RawIO.Write(line);
             }
-            
+            mbSession.UnlockResource();
+
+        }
+
+        private void usageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("http://github.com/bveina/Rigol-Scope-Snap");
         }
     }
 }
