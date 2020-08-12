@@ -174,15 +174,17 @@ namespace ScopeSnapSharp
                     //mbSession.RawIO.Write(":STORAGE:IMAGE:INVERT?"); //DS1000Z
                     mbSession.RawIO.Write(invertCommands[0]);
                     s = mbSession.FormattedIO.ReadLine();
-                    if (s.Trim() == invertCommands[2]) // if on
-                        invertToolStripMenuItem.Checked = true;
+                    // TODO: set this in a threadsafe way
+                    //if (s.Trim() == invertCommands[2]) // if on
+                    //    invertToolStripMenuItem.Checked = true;
 
                     //mbSession.RawIO.Write(":SAVE:IMAGE:COLOR?");
                     //mbSession.RawIO.Write(":STORAGE:IMAGE:COLOR?");
                     mbSession.RawIO.Write(turnGrayscaleCommands[0]);
                     s = mbSession.FormattedIO.ReadLine();
-                    if (s.Trim() == turnGrayscaleCommands[2])
-                        grayscaleToolStripMenuItem.Checked = true;
+                    // TODO: set this in a threadsafe way
+                    //if (s.Trim() == turnGrayscaleCommands[2])
+                    //    grayscaleToolStripMenuItem.Checked = true;
                 }
                 catch (Ivi.Visa.VisaException ex)
                 {
@@ -447,8 +449,11 @@ namespace ScopeSnapSharp
         // destroy the existing connection to the instrument and update the controls to show we are disconnected.
         private void btnDisconnect_Click(object sender, EventArgs e)
         {
-            SetupControlState(false);
-            mbSession.Dispose();
+            lock (mbSession)
+            {
+                SetupControlState(false);
+                mbSession.Dispose();
+            }
         }
         private void btnConnect_Click(object sender, EventArgs e)
         {
@@ -801,11 +806,11 @@ namespace ScopeSnapSharp
                 string model = idnList[1].Trim();
                 if (model.StartsWith("DS1"))
                 {
-                    this.turnGrayscaleCommands = new string[] { ":STORage:IMAGE:COLOR?", ":STORage:IMAGE:COLOR {0}", "ON", "OFF" };
+                    this.turnGrayscaleCommands = new string[] { ":STORage:IMAGE:COLOR?", ":STORage:IMAGE:COLOR {0}", "OFF", "ON" };
                     this.invertCommands = new string[] { ":STORage:IMAGE:INVERT?", ":STORage:IMAGE:INVERT {0}", "ON", "Off" };
-                    this.getDataCommand = "DISP:DATA? ON,ON,BMP";
+                    this.getDataCommand = "DISP:DATA?";
                 }
-                else if (model.StartsWith("MS5A"))
+                else if (model.StartsWith("MSO5"))
                 {
                     this.turnGrayscaleCommands = new string[] { ":SAVE:IMAGE:COLOR?", ":SAVE:IMAGE:COLOR {0}", "GRAY", "COLor" };
                     this.invertCommands = new string[] { ":SAVE:IMAGE:INVERT?", ":SAVE:IMAGE:INVERT {0}", "1", "0" };
