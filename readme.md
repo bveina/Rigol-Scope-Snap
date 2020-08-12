@@ -12,7 +12,7 @@ buttons and the touchscreen interface.
 - [Connecting to your Scope](#connecting-to-your-scope--shortcut-ctrln)
 - [Saving to a File ](#saving-images-shortcut-ctrls)
 - [Copying to Clipboard](#copying-images-shortcut-ctrlc)
-
+- [Using the SCPI interface](#scpi-interface)
 
 # Installing
 This app relies on the NI runtime available: https://www.ni.com/en-us/support/downloads/drivers/download.ni-visa.html
@@ -23,13 +23,9 @@ Other than that requirement, the app is standalone.
 # Usage
 ![Startup Screen](/images/OnStartup.PNG)
 ## Connecting to your scope ( Shortcut: Ctrl+N)
-When starting Scope Snap, you must choose a device to connect to. clicking
-search will attempt to find all USB devices connected to your machine. If only
-device is found Scope Snap will attempt to auto connect to that device. And grab
-the first image to display on screen.
+When starting Scope Snap, the application will automatically attempt to connect to a scope if no errors occurred on the last run of the program. If the application does not auto search you must choose a device to connect to. Clicking search will attempt to find all USB devices connected to your machine. If only one device is found Scope Snap will attempt to auto connect to that device and grab the first image to display on screen.
 
-If multiple devices are found, select from the available list items then press
-connect.
+If multiple devices are found, select from the available list items then press connect.
 
 **Warning: There is currently no checking if your device is a MSO5xxx. This
 could result in unintended side effects.**
@@ -82,13 +78,27 @@ The mouse can be used to interact with the Scope in several ways.
 3. Users can use the Soft Keys described in the options menu section.
 
 ## Live Mode
-Live mode will refresh the screen image roughly once a second. It can be
-activated by checking either:
+Live mode is on by default unless the program was unable to connect to a scope on the last run.
+Live mode will refresh the screen image roughly once a second. It can be toggled by checking either:
 * The Live Checkbox in the lower Right.
 * The _Options->Live_ menu item.
 
 ## SCPI interface
-Advanced Users may wish to send raw SCPI commands or queries to the scope. users may issue multiple commands at once by placing sequential commands on multiple lines then selecting "Write".
+![SCPI Command Box](/images/SCPICommands.PNG)
+Advanced Users may wish to send raw SCPI commands or queries to the scope. users may issue multiple commands at once by placing sequential commands on multiple lines then selecting "Write". to get the banner image (AM modulation with color-grading) try pasting the code below into the SCPI command box.
+
+```
+*RST
+SAVE:IMAGE:INVERT ON
+SOURCE1:FREQ 1000000
+SOURCE1:OUTPUT ON
+SOURCE1:MOD:TYPE AM
+SOURCE1:MOD:AM:INTernal:FREQuency 1000
+TIMEBASE:SCALE 500uS
+TRIGger:EDGE:LEVel 0.200
+DISPlay:COLor ON
+```
+
+
 
 Multiple Queries can also be accomplished in the same way.
-![Successfully Connected](/images/SCPICommands.PNG)
