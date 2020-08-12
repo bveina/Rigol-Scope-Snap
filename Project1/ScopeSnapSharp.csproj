@@ -72,7 +72,7 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>oscope.ico</ApplicationIcon>
+    <ApplicationIcon>oscope1.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -152,6 +152,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="oscope.ico" />
+    <Content Include="oscope1.ico" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\DataSources\" />

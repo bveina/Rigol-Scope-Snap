@@ -99,7 +99,7 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tableLayoutPanel1);
             this.splitContainer1.Size = new System.Drawing.Size(1236, 528);
-            this.splitContainer1.SplitterDistance = 896;
+            this.splitContainer1.SplitterDistance = 895;
             this.splitContainer1.TabIndex = 1;
             // 
             // splitContainer2
@@ -116,8 +116,8 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.pictureBox1);
-            this.splitContainer2.Size = new System.Drawing.Size(896, 528);
-            this.splitContainer2.SplitterDistance = 61;
+            this.splitContainer2.Size = new System.Drawing.Size(895, 528);
+            this.splitContainer2.SplitterDistance = 60;
             this.splitContainer2.SplitterWidth = 3;
             this.splitContainer2.TabIndex = 1;
             // 
@@ -131,7 +131,7 @@
             this.tblLayoutButtons.Name = "tblLayoutButtons";
             this.tblLayoutButtons.RowCount = 1;
             this.tblLayoutButtons.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblLayoutButtons.Size = new System.Drawing.Size(61, 528);
+            this.tblLayoutButtons.Size = new System.Drawing.Size(60, 528);
             this.tblLayoutButtons.TabIndex = 0;
             // 
             // pictureBox1
@@ -173,7 +173,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(336, 528);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(337, 528);
             this.tableLayoutPanel1.TabIndex = 5;
             // 
             // btnSearch
@@ -194,7 +194,7 @@
             this.textBox1.Location = new System.Drawing.Point(3, 157);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(330, 20);
+            this.textBox1.Size = new System.Drawing.Size(331, 20);
             this.textBox1.TabIndex = 4;
             this.textBox1.DoubleClick += new System.EventHandler(this.textBox1_DoubleClick);
             // 
@@ -203,7 +203,7 @@
             this.btnConnect.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnConnect.Location = new System.Drawing.Point(171, 183);
             this.btnConnect.Name = "btnConnect";
-            this.btnConnect.Size = new System.Drawing.Size(162, 24);
+            this.btnConnect.Size = new System.Drawing.Size(163, 24);
             this.btnConnect.TabIndex = 6;
             this.btnConnect.Text = "Connect";
             this.btnConnect.UseVisualStyleBackColor = true;
@@ -216,7 +216,7 @@
             this.listBox1.FormattingEnabled = true;
             this.listBox1.Location = new System.Drawing.Point(3, 3);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(330, 148);
+            this.listBox1.Size = new System.Drawing.Size(331, 148);
             this.listBox1.TabIndex = 2;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
@@ -226,7 +226,7 @@
             this.btnSave.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnSave.Location = new System.Drawing.Point(3, 441);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(330, 54);
+            this.btnSave.Size = new System.Drawing.Size(331, 54);
             this.btnSave.TabIndex = 7;
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
@@ -275,7 +275,7 @@
             this.tblLayoutAdvanced.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblLayoutAdvanced.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblLayoutAdvanced.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
-            this.tblLayoutAdvanced.Size = new System.Drawing.Size(332, 143);
+            this.tblLayoutAdvanced.Size = new System.Drawing.Size(333, 143);
             this.tblLayoutAdvanced.TabIndex = 10;
             // 
             // txtSCPIcmd
@@ -286,13 +286,13 @@
             this.txtSCPIcmd.Margin = new System.Windows.Forms.Padding(2);
             this.txtSCPIcmd.Multiline = true;
             this.txtSCPIcmd.Name = "txtSCPIcmd";
-            this.txtSCPIcmd.Size = new System.Drawing.Size(324, 45);
+            this.txtSCPIcmd.Size = new System.Drawing.Size(325, 45);
             this.txtSCPIcmd.TabIndex = 14;
             // 
             // cmdReadSCPI
             // 
             this.cmdReadSCPI.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdReadSCPI.Location = new System.Drawing.Point(169, 55);
+            this.cmdReadSCPI.Location = new System.Drawing.Point(170, 55);
             this.cmdReadSCPI.Margin = new System.Windows.Forms.Padding(2);
             this.cmdReadSCPI.Name = "cmdReadSCPI";
             this.cmdReadSCPI.Size = new System.Drawing.Size(159, 20);
@@ -323,7 +323,7 @@
             this.txtSCPIresponse.Multiline = true;
             this.txtSCPIresponse.Name = "txtSCPIresponse";
             this.txtSCPIresponse.ReadOnly = true;
-            this.txtSCPIresponse.Size = new System.Drawing.Size(314, 48);
+            this.txtSCPIresponse.Size = new System.Drawing.Size(315, 48);
             this.txtSCPIresponse.TabIndex = 12;
             // 
             // statusStrip1
