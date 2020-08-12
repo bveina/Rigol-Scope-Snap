@@ -248,9 +248,9 @@
             this.checkBox1.AutoSize = true;
             this.checkBox1.Location = new System.Drawing.Point(172, 501);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(76, 17);
+            this.checkBox1.Size = new System.Drawing.Size(84, 17);
             this.checkBox1.TabIndex = 9;
-            this.checkBox1.Text = "Live (slow)";
+            this.checkBox1.Text = "Live Update";
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
@@ -286,6 +286,7 @@
             this.txtSCPIcmd.Margin = new System.Windows.Forms.Padding(2);
             this.txtSCPIcmd.Multiline = true;
             this.txtSCPIcmd.Name = "txtSCPIcmd";
+            this.txtSCPIcmd.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtSCPIcmd.Size = new System.Drawing.Size(326, 45);
             this.txtSCPIcmd.TabIndex = 14;
             // 
@@ -323,8 +324,10 @@
             this.txtSCPIresponse.Multiline = true;
             this.txtSCPIresponse.Name = "txtSCPIresponse";
             this.txtSCPIresponse.ReadOnly = true;
+            this.txtSCPIresponse.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtSCPIresponse.Size = new System.Drawing.Size(316, 48);
             this.txtSCPIresponse.TabIndex = 12;
+            this.txtSCPIresponse.Leave += new System.EventHandler(this.txtSCPIresponse_Leave);
             // 
             // statusStrip1
             // 
@@ -356,14 +359,14 @@
             // 
             this.toolStripStatusLabel2.AutoSize = false;
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(945, 17);
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(934, 17);
             this.toolStripStatusLabel2.Spring = true;
             // 
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(118, 17);
-            this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(129, 17);
+            this.toolStripStatusLabel1.Text = "Position: Not Initialized";
             // 
             // menuStrip1
             // 
@@ -424,7 +427,7 @@
             // copyToolStripMenuItem1
             // 
             this.copyToolStripMenuItem1.Name = "copyToolStripMenuItem1";
-            this.copyToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
+            this.copyToolStripMenuItem1.ShortcutKeyDisplayString = "Ctrl+C";
             this.copyToolStripMenuItem1.Size = new System.Drawing.Size(144, 22);
             this.copyToolStripMenuItem1.Text = "&Copy";
             this.copyToolStripMenuItem1.Click += new System.EventHandler(this.copyToolStripMenuItem1_Click);
@@ -449,7 +452,7 @@
             this.invertToolStripMenuItem.CheckOnClick = true;
             this.invertToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.invertToolStripMenuItem.Name = "invertToolStripMenuItem";
-            this.invertToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.invertToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.invertToolStripMenuItem.Text = "Invert";
             this.invertToolStripMenuItem.Click += new System.EventHandler(this.invertToolStripMenuItem_Click);
             // 
@@ -457,15 +460,17 @@
             // 
             this.grayscaleToolStripMenuItem.CheckOnClick = true;
             this.grayscaleToolStripMenuItem.Name = "grayscaleToolStripMenuItem";
-            this.grayscaleToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.grayscaleToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.grayscaleToolStripMenuItem.Text = "Grayscale";
             this.grayscaleToolStripMenuItem.Click += new System.EventHandler(this.grayscaleToolStripMenuItem_Click);
             // 
             // liveToolStripMenuItem
             // 
+            this.liveToolStripMenuItem.Checked = true;
             this.liveToolStripMenuItem.CheckOnClick = true;
+            this.liveToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.liveToolStripMenuItem.Name = "liveToolStripMenuItem";
-            this.liveToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.liveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.liveToolStripMenuItem.Text = "Live";
             this.liveToolStripMenuItem.Click += new System.EventHandler(this.liveToolStripMenuItem_Click);
             // 
@@ -473,7 +478,7 @@
             // 
             this.showButtonsToolStripMenuItem.CheckOnClick = true;
             this.showButtonsToolStripMenuItem.Name = "showButtonsToolStripMenuItem";
-            this.showButtonsToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.showButtonsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.showButtonsToolStripMenuItem.Text = "Show Buttons";
             this.showButtonsToolStripMenuItem.Click += new System.EventHandler(this.showButtonsToolStripMenuItem_Click);
             // 
@@ -483,7 +488,7 @@
             this.showRightPanelToolStripMenuItem.CheckOnClick = true;
             this.showRightPanelToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.showRightPanelToolStripMenuItem.Name = "showRightPanelToolStripMenuItem";
-            this.showRightPanelToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.showRightPanelToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.showRightPanelToolStripMenuItem.Text = "Show Right Panel";
             this.showRightPanelToolStripMenuItem.Click += new System.EventHandler(this.showRightPanelToolStripMenuItem_Click);
             // 
@@ -491,7 +496,7 @@
             // 
             this.advancedPanelToolStripMenuItem.CheckOnClick = true;
             this.advancedPanelToolStripMenuItem.Name = "advancedPanelToolStripMenuItem";
-            this.advancedPanelToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.advancedPanelToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.advancedPanelToolStripMenuItem.Text = "Advanced Panel";
             this.advancedPanelToolStripMenuItem.Click += new System.EventHandler(this.advancedPanelToolStripMenuItem_Click);
             // 
@@ -527,10 +532,12 @@
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.splitContainer1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Scope Snap Sharp";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();

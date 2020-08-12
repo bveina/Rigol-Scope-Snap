@@ -117,7 +117,7 @@ namespace ScopeSnapSharp
                 {
                     Button b = new Button();
                     b.Text = pair.Key;
-                    b.Click += quickButton_click;
+                    b.Click += cmdSendButtonPress_click;
                     b.Dock = DockStyle.Fill;
                     b.Tag = pair.Value;
                     tblLayoutButtons.RowStyles.Add(new RowStyle(SizeType.Percent, 100 / QuickList.Count));
@@ -129,6 +129,13 @@ namespace ScopeSnapSharp
                 tblLayoutButtons.Width = 80;
                 splitContainer2.Panel1Collapsed = true;
                 tblLayoutAdvanced.Visible = advancedPanelToolStripMenuItem.Checked;
+
+                if (Settings.Default.LastConnectionSuccessful)
+                {
+                    this.Live = true;
+                    this.beginSearchConnections();
+                }
+
             }
             catch (Exception ex)
             {
@@ -240,6 +247,7 @@ namespace ScopeSnapSharp
                 {
                     SetupControlState(false);
                     mbSession.Dispose();
+                    setMessage("Disconnected!");
                     MessageBox.Show("There was a problem while grabbbing an image, please reconnect to the Scope");
                 }
                 return;
@@ -314,6 +322,8 @@ namespace ScopeSnapSharp
                 textBox1.Text = (string)resourceList[0];
                 setMessage("One Instrument Found.");
                 connect((string)resourceList[0]);
+                
+                updateScreen(pictureBox1);
             }
             else if (resourceList.Count != 0)
             {
@@ -396,7 +406,7 @@ namespace ScopeSnapSharp
         // this method is called by all side panel buttons on click. 
         // button tag must contain the string that should be sent
         // sends a simulated keypress to the scope
-        private void quickButton_click(object sender, EventArgs e)
+        private void cmdSendButtonPress_click(object sender, EventArgs e)
         {
             mbSession.RawIO.Write(String.Format(":SYST:KEY:PRESS {0}", (string)(sender as Button).Tag));
         }
@@ -473,7 +483,10 @@ namespace ScopeSnapSharp
             string txt2Send = string.Format(":SYSTem:TOUCh {0}, {1}", myX, myY);
             try
             {
-                mbSession.RawIO.Write(txt2Send);
+                lock (mbSession)
+                {
+                    mbSession.RawIO.Write(txt2Send);
+                }
             }
             catch (Ivi.Visa.IOTimeoutException)
             {
@@ -636,6 +649,8 @@ namespace ScopeSnapSharp
                 foreach (var line in arr)
                 {
                     mbSession.RawIO.Write(line);
+                    mbSession.RawIO.Write("*WAI");
+
                 }
             }
 
@@ -700,8 +715,6 @@ namespace ScopeSnapSharp
 
             checkBox1.Enabled = state;
 
-            //checkBox1.Checked = false;// yes, anytime we connect or disconnect we turn off live mode.
-            this.Live = false;
             btnGrab.Enabled = state;
             newConnectionToolStripMenuItem.Enabled = !state;
         }
@@ -732,7 +745,12 @@ namespace ScopeSnapSharp
                     if (invertToolStripMenuItem.Checked)
                         mbSession.RawIO.Write(":SAVE:IMAGE:INVERT ON");
                     setMessage("Connected to " + res);
+                    if (Settings.Default.LastConnectionSuccessful && this.Live)
+                    {
+                        t.Enabled = true; //force timer on incase it timed out while connecting.
+                    }
                     updateScreen(pictureBox1);
+                    Settings.Default.LastConnectionSuccessful = true;
                     
                 }
                 catch (InvalidCastException)
@@ -901,13 +919,27 @@ namespace ScopeSnapSharp
             tmp.Dispose();
         }
 
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode==Keys.C && e.Modifiers == Keys.Control)
+            {
+                if (isTextSelected()) return; 
+                System.Windows.Forms.Clipboard.SetImage(model);
+                e.Handled = true;
+            }
+        }
 
-        
+        private bool isTextSelected()
+        {
+            if (txtSCPIcmd.SelectionLength != 0) return true;
+            if (txtSCPIresponse.SelectionLength != 0) return true;
+            if (textBox1.SelectionLength != 0) return true;
+            return false;
+        }
 
-        
-
-        
-
-        
+        private void txtSCPIresponse_Leave(object sender, EventArgs e)
+        {
+            txtSCPIresponse.SelectionLength = 0;
+        }
     }
 }
