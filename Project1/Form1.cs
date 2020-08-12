@@ -243,6 +243,7 @@ namespace ScopeSnapSharp
                 if (FailCount > 5)
                 {
                     SetupControlState(false);
+                    mbSession.Dispose();
                     MessageBox.Show("There was a problem while grabbbing an image, please reconnect to the Scope");
                 }
                 return;
