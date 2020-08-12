@@ -152,67 +152,63 @@ namespace ScopeSnapSharp
 
             //query what the scope is doing for image settings and setup controls to reflect that
             string s;
-            try
+            lock (mbSession)
             {
-                mbSession.LockResource();
-                mbSession.RawIO.Write(":SAVE:IMAGE:INVERT?");
-                s = mbSession.FormattedIO.ReadLine();
-                if (s.Trim() == "1")
-                    invertToolStripMenuItem.Checked = true;
+                try
+                {
 
-                mbSession.RawIO.Write(":SAVE:IMAGE:COLOR?");
-                s = mbSession.FormattedIO.ReadLine();
-                if (s.Trim() == "GRAY")
-                    grayscaleToolStripMenuItem.Checked = true;
-            }
-            catch (Ivi.Visa.VisaException ex)
-            {
-                e.Result = null;
-                return;
-            }
-            finally
-            {
-                mbSession.UnlockResource();
-            }
+                    mbSession.RawIO.Write(":SAVE:IMAGE:INVERT?");
+                    s = mbSession.FormattedIO.ReadLine();
+                    if (s.Trim() == "1")
+                        invertToolStripMenuItem.Checked = true;
 
-            // yes this is just trying to get a single image and having 3 catch blocks just for this
-            byte[] tmpPacket=null;
-            try
-            {
-                mbSession.LockResource();
-                tmpPacket = getImage();
+                    mbSession.RawIO.Write(":SAVE:IMAGE:COLOR?");
+                    s = mbSession.FormattedIO.ReadLine();
+                    if (s.Trim() == "GRAY")
+                        grayscaleToolStripMenuItem.Checked = true;
+                }
+                catch (Ivi.Visa.VisaException ex)
+                {
+                    e.Result = null;
+                    return;
+                }
             }
-            catch (ArgumentException ex)
-            {
-                (sender as BackgroundWorker).ReportProgress(00, ex.Message);
-                e.Result = null;
-                return;
-            }
-            catch (Ivi.Visa.IOTimeoutException)
-            {
-                (sender as BackgroundWorker).ReportProgress(100, "Scope Stopped Responding, is it on and plugged in?");
-                e.Result = null;
-                return;
-            }
-            catch (Exception exp)
-            {
-                MessageBox.Show(exp.Message, exp.Message);
-                e.Result = null;
-                return;
-                
-            }
-            finally
-            {
-                mbSession.UnlockResource();
-            }
+            lock(mbSession)
+            { 
+                // yes this is just trying to get a single image and having 3 catch blocks just for this
+                byte[] tmpPacket = null;
+                try
+                {
 
+                    tmpPacket = getImage();
+                }
+                catch (ArgumentException ex)
+                {
+                    (sender as BackgroundWorker).ReportProgress(00, ex.Message);
+                    e.Result = null;
+                    return;
+                }
+                catch (Ivi.Visa.IOTimeoutException)
+                {
+                    (sender as BackgroundWorker).ReportProgress(100, "Scope Stopped Responding, is it on and plugged in?");
+                    e.Result = null;
+                    return;
+                }
+                catch (Exception exp)
+                {
+                    MessageBox.Show(exp.Message, exp.Message);
+                    e.Result = null;
+                    return;
 
-            if (tmpPacket == null)
-            {
-                e.Result = null;
-                return; // something broke. fail silently and add to the fail count
+                }
+
+                if (tmpPacket == null)
+                {
+                    e.Result = null;
+                    return; // something broke. fail silently and add to the fail count
+                }
+                lastPacket = tmpPacket;
             }
-            lastPacket = tmpPacket;
 
             // we finally have a bitmap, convert it to a bitmap.
             MemoryStream ms = new MemoryStream();
@@ -497,10 +493,6 @@ namespace ScopeSnapSharp
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             this.Live = (sender as CheckBox).Checked;
-            //liveToolStripMenuItem.Checked = (sender as CheckBox).Checked;
-            //t.Enabled = (sender as CheckBox).Checked;
-
-
         }
 
 
@@ -516,7 +508,6 @@ namespace ScopeSnapSharp
 
         private void copyToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            //SaveScreenShot();
             System.Windows.Forms.Clipboard.SetImage(model);
         }
 
@@ -610,35 +601,43 @@ namespace ScopeSnapSharp
             }
         }
 
-        private void cmdReadSCPI_Click(object sender, EventArgs e)
+        private void cmdQuerySCPI_Click(object sender, EventArgs e)
         {
-            if (mbSession == null || mbSession.IsDisposed) return;
-            try
+            lock (mbSession)
             {
-                txtSCPIresponse.Text = "";
-                txtSCPIresponse.Text = mbSession.RawIO.ReadString();
-            }
-            catch (Ivi.Visa.IOTimeoutException ex)
-            {
-                txtSCPIresponse.Text = "Read Timed Out";
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
+                if (mbSession == null || mbSession.IsDisposed) return;
+                try
+                {
+                    txtSCPIresponse.Text = "";
+                    string[] arr = txtSCPIcmd.Text.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var line in arr)
+                    {
+                        mbSession.RawIO.Write(line);
+                        txtSCPIresponse.Text +=mbSession.RawIO.ReadString() + "\r\n";
+                    }
+                }
+                catch (Ivi.Visa.IOTimeoutException ex)
+                {
+                    txtSCPIresponse.Text = "Query Timed Out";
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
         }
-        private void button1_Click(object sender, EventArgs e)
+        private void cmdSCPISend_Click(object sender, EventArgs e)
         {
-            if (mbSession == null || mbSession.IsDisposed) return;
-            if (mbSession.ResourceLockState == Ivi.Visa.ResourceLockState.ExclusiveLock)
-                setMessage("locked!!");
-            mbSession.LockResource();
-            string[] arr = txtSCPIcmd.Text.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            foreach (var line in arr)
+            lock (mbSession)
             {
-                mbSession.RawIO.Write(line);
+                if (mbSession == null || mbSession.IsDisposed) return;
+                
+                string[] arr = txtSCPIcmd.Text.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var line in arr)
+                {
+                    mbSession.RawIO.Write(line);
+                }
             }
-            mbSession.UnlockResource();
 
         }
 
@@ -767,7 +766,7 @@ namespace ScopeSnapSharp
         }
 
 
-        // retrieve an image from the instrument
+        // retrieve an image from the instrument. can be run from a background thread.
         private byte[] getImage()
         {
             string getDataCmd = "DISP:DATA?"; // mso5000
@@ -785,7 +784,12 @@ namespace ScopeSnapSharp
             }
             int tmcHeaderSize = tmcSize[1] - '0';
             byte[] packetSizeString = mbSession.RawIO.Read(tmcHeaderSize);
-            int packetSize = int.Parse(System.Text.Encoding.ASCII.GetString(packetSizeString));
+            int packetSize;
+            if (!int.TryParse(System.Text.Encoding.ASCII.GetString(packetSizeString), out packetSize))
+            {
+                throw new ArgumentException("Error while parsing packet size: {0}", System.Text.Encoding.ASCII.GetString(packetSizeString));
+            }
+            //int packetSize = int.Parse(System.Text.Encoding.ASCII.GetString(packetSizeString));
             byte[] packet = new byte[packetSize];
 
             long blocksize = (long)Math.Pow(2, 17);

@@ -7,6 +7,13 @@ screen shots of the MSO5000 series oscilloscope.
 Additionally, basic control of the scope is accomplished through dedicated
 buttons and the touchscreen interface.
 
+## Table of Contents
+- [How To Install](#installing)
+- [Connecting to your Scope](#connecting-to-your-scope--shortcut-ctrln)
+- [Saving to a File ](#saving-images-shortcut-ctrls)
+- [Copying to Clipboard](#copying-images-shortcut-ctrlc)
+
+
 # Installing
 This app relies on the NI runtime available: https://www.ni.com/en-us/support/downloads/drivers/download.ni-visa.html
 
@@ -40,6 +47,18 @@ finally click connect, now you can control your scope over the network too!
 
 ![Successfully Connected](/images/OnConnect.PNG)
 
+## Options menu
+The Options Menu can change how the UI appears and how the Image Appears.
+* Invert - Uses the Scopes Invert Function to provide a white background. This is
+the default, as it looks better in reports.
+* Grayscale - makes the image only shades of black and white...thats it.
+* Live - Enables or Disables Wide mode.
+* Show Buttons - adds/removes a toolbox of buttons on the left side.
+* Show Right Panel - adds/removes the connection panel on the right side of the
+screen.
+* Advanced Panel - Manually Communicate via the SCPI interface (ascii only, no TMC or raw packets.)
+
+
 ## Saving Images (Shortcut: Ctrl+S)
 Saving the currently shown image can be accomplished in several ways:
 * The _Save_ button on the bottom right.
@@ -68,12 +87,8 @@ activated by checking either:
 * The Live Checkbox in the lower Right.
 * The _Options->Live_ menu item.
 
-## Options menu
-The Options Menu can change how the UI appears and how the Image Appears.
-* Invert - Uses the Scopes Invert Function to provide a white background. This is
-the default, as it looks better in reports.
-* Grayscale - makes the image only shades of black and white...thats it.
-* Live - Enables or Disables Wide mode.
-* Show Buttons - adds/removes a toolbox of buttons on the left side.
-* Show Right Panel - adds/removes the connection panel on the right side of the
-screen.
+## SCPI interface
+Advanced Users may wish to send raw SCPI commands or queries to the scope. users may issue multiple commands at once by placing sequential commands on multiple lines then selecting "Write".
+
+Multiple Queries can also be accomplished in the same way.
+![Successfully Connected](/images/SCPICommands.PNG)
