@@ -339,6 +339,8 @@ namespace ScopeSnapSharp
             }
             else if (resourceList.Count != 0)
             {
+                listBox1.SelectedIndex = 0;
+                textBox1.Text = (string)resourceList[0];
                 setMessage("Multiple Instruments Found, Please Select one and click connect.");
                 //listBox1.SelectedIndex = 0;
             }
