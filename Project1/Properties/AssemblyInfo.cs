@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("Tool for taking Screenshots from a Rigol 5000 series O-Scope")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("University of Massacussets Dartmouth")]
-[assembly: AssemblyProduct("Project1.Properties")]
+[assembly: AssemblyProduct("ScopeSnap")]
 [assembly: AssemblyCopyright("2020 Ben Viall")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
