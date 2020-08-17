@@ -412,6 +412,7 @@ namespace ScopeSnapSharp
                         MessageBox.Show(ex.Message);
                         SetupControlState(false);
                         mbSession.Dispose();
+                        setMessage("Disconnected");
                     }
                 }
             }
@@ -460,6 +461,7 @@ namespace ScopeSnapSharp
             {
                 SetupControlState(false);
                 mbSession.Dispose();
+                setMessage("Disconnected");
             }
         }
         private void btnConnect_Click(object sender, EventArgs e)
@@ -515,12 +517,14 @@ namespace ScopeSnapSharp
                 MessageBox.Show("Scope Lost Contact", "Error Sending Touch Request");
                 SetupControlState(false);
                 mbSession.Dispose();
+                setMessage("Disconnected");
             }
             catch (Exception exp)
             {
                 MessageBox.Show(exp.Message, "Error Sending Touch Request");
                 SetupControlState(false);
                 mbSession.Dispose();
+                setMessage("Disconnected");
             }
 
         }
