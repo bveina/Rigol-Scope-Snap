@@ -1,19 +1,17 @@
-﻿using System;
+﻿using NationalInstruments.Visa;
+using ScopeSnapSharp.Properties;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Deployment.Application;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using NationalInstruments.Visa;
-using ScopeSnapSharp.Properties;
+
+using System.Text.RegularExpressions;
+using Ivi.Visa;
 
 namespace ScopeSnapSharp
 {
@@ -26,6 +24,7 @@ namespace ScopeSnapSharp
         private bool Connected;
         private int FailCount;
         private bool _live;
+        private Func<byte[]> imgGrabFunction;
         Size LastPicSize = new Size(0, 0);
 
         public BindingList<string> resourceList { get; set; }
@@ -74,7 +73,69 @@ namespace ScopeSnapSharp
             { "BACK","BACK"}
         };
 
-        
+        public bool getInvertStatus()
+        {
+            if (invertCommands[0] == "") return false;
+            if (invertCommands[2] == "") return false;
+            lock (mbSession)
+            {
+                
+                mbSession.RawIO.Write(invertCommands[0]);
+                string s = mbSession.FormattedIO.ReadLine();
+                if (s.Trim() == invertCommands[2])
+                    return true;
+                else
+                    return false;
+            }
+        }
+
+        public void setInvert(bool inverted)
+        {
+            if (invertCommands[1] == "") return ;
+            if (invertCommands[2] == "") return ;
+            if (invertCommands[3] == "") return ;
+            lock (mbSession)
+            {
+                if (inverted)
+                    mbSession.RawIO.Write(string.Format(invertCommands[1], invertCommands[2]));
+                else
+                    mbSession.RawIO.Write(string.Format(invertCommands[1], invertCommands[3]));
+            }
+        }
+
+        public bool getGrayscaleStatus()
+        {
+            if (turnGrayscaleCommands[0] == "") return false;
+            if (turnGrayscaleCommands[2] == "") return false;
+            lock (mbSession)
+            {
+
+                mbSession.RawIO.Write(turnGrayscaleCommands[0]);
+                string s = mbSession.FormattedIO.ReadLine();
+                if (s.Trim() == turnGrayscaleCommands[2])
+                    return true;
+                else
+                    return false;
+            }
+        }
+        public void setGrayscale(bool gray)
+        {
+            if (turnGrayscaleCommands[1] == "") ;
+            if (turnGrayscaleCommands[2] == "") ;
+            if (turnGrayscaleCommands[3] == "") ;
+
+            lock (mbSession)
+            {
+                if (gray)
+                {
+                    mbSession.RawIO.Write(string.Format(turnGrayscaleCommands[1], turnGrayscaleCommands[2]));
+                }
+                else
+                {
+                    mbSession.RawIO.Write(string.Format(turnGrayscaleCommands[1], turnGrayscaleCommands[3]));
+                }
+            }
+        }
 
         /// <summary>
         /// The main entry point for the application.
@@ -172,24 +233,26 @@ namespace ScopeSnapSharp
 
                     //mbSession.RawIO.Write(":SAVE:IMAGE:INVERT?"); //MSO5000
                     //mbSession.RawIO.Write(":STORAGE:IMAGE:INVERT?"); //DS1000Z
-                    mbSession.RawIO.Write(invertCommands[0]);
-                    s = mbSession.FormattedIO.ReadLine();
+                    //mbSession.RawIO.Write(invertCommands[0]);
+                    //s = mbSession.FormattedIO.ReadLine();
                     // TODO: set this in a threadsafe way
                     //if (s.Trim() == invertCommands[2]) // if on
                     //    invertToolStripMenuItem.Checked = true;
-
+                    invertToolStripMenuItem.Checked = getInvertStatus();
                     //mbSession.RawIO.Write(":SAVE:IMAGE:COLOR?");
                     //mbSession.RawIO.Write(":STORAGE:IMAGE:COLOR?");
-                    mbSession.RawIO.Write(turnGrayscaleCommands[0]);
-                    s = mbSession.FormattedIO.ReadLine();
+                    //mbSession.RawIO.Write(turnGrayscaleCommands[0]);
+                    //s = mbSession.FormattedIO.ReadLine();
                     // TODO: set this in a threadsafe way
                     //if (s.Trim() == turnGrayscaleCommands[2])
                     //    grayscaleToolStripMenuItem.Checked = true;
+                    grayscaleToolStripMenuItem.Checked = getGrayscaleStatus();
                 }
                 catch (Ivi.Visa.VisaException ex)
                 {
-                    e.Result = null;
-                    return;
+                    (sender as BackgroundWorker).ReportProgress(00, ex.Message);
+                    //e.Result = null;
+                    //return;
                 }
             }
             lock(mbSession)
@@ -199,7 +262,9 @@ namespace ScopeSnapSharp
                 try
                 {
 
-                    tmpPacket = getImage();
+                    //tmpPacket = getImage();
+                    //tmpPacket = getJFIFImage();
+                    tmpPacket = this.imgGrabFunction();
                 }
                 catch (ArgumentException ex)
                 {
@@ -557,30 +622,12 @@ namespace ScopeSnapSharp
 
         private void invertToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (invertToolStripMenuItem.Checked)
-            {
-                //mbSession.RawIO.Write(":SAVE:IMAGE:INVERT ON");
-                mbSession.RawIO.Write(string.Format(invertCommands[1], invertCommands[2]));
-            }
-            else
-            {
-                //mbSession.RawIO.Write(":SAVE:IMAGE:INVERT OFF");
-                mbSession.RawIO.Write(string.Format(invertCommands[1], invertCommands[3]));
-            }
+            setInvert(invertToolStripMenuItem.Checked);
         }
 
         private void grayscaleToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (grayscaleToolStripMenuItem.Checked)
-            {
-                //mbSession.RawIO.Write(":SAVE:IMAGE:COLOR GRAY");
-                mbSession.RawIO.Write(string.Format(turnGrayscaleCommands[1], turnGrayscaleCommands[2]));
-            }
-            else
-            {
-                //mbSession.RawIO.Write(":SAVE:IMAGE:COLOR COLOR");
-                mbSession.RawIO.Write(string.Format(turnGrayscaleCommands[1], turnGrayscaleCommands[3]));
-            }
+            setGrayscale(grayscaleToolStripMenuItem.Checked);
         }
 
         private void showButtonsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -765,9 +812,14 @@ namespace ScopeSnapSharp
                     // probably not.
                     // update Strings
                     mbSession.RawIO.Write("*IDN?");
-                    UpdateQueryStrings(mbSession.RawIO.ReadString());
+                    if (!UpdateQueryStrings(mbSession.RawIO.ReadString()))
+                    {
+                        // cant figure out how to use this scope, so leave everything disabled and be done.
+                        setMessage("Limited Connected to " + res);
+                        return;
+                    }
 
-                    if (invertToolStripMenuItem.Checked)
+                    if (invertToolStripMenuItem.Checked && invertCommands[1] !="")
                     {
                         //mbSession.RawIO.Write(":SAVE:IMAGE:INVERT ON");
                         mbSession.RawIO.Write(string.Format(invertCommands[1], invertCommands[2]));
@@ -799,41 +851,61 @@ namespace ScopeSnapSharp
             }
         }
 
-        private void UpdateQueryStrings(string idnResponse)
+        private bool UpdateQueryStrings(string idnResponse)
         {
             //RIGOL TECHNOLOGIES, DS1104Z, DS1ZA192309090,00.04.04.SP4
             string[] idnList = idnResponse.Split(',');
-            if (idnList[0].Contains("RIGOL"))
-            {
+            //if (idnList[0].ToUpper().Contains("RIGOL"))
+            //{
                 string model = idnList[1].Trim();
-                if (model.StartsWith("DS1"))
-                {
-                    this.turnGrayscaleCommands = new string[] { ":STORage:IMAGE:COLOR?", ":STORage:IMAGE:COLOR {0}", "OFF", "ON" };
-                    this.invertCommands = new string[] { ":STORage:IMAGE:INVERT?", ":STORage:IMAGE:INVERT {0}", "ON", "Off" };
-                    this.getDataCommand = "DISP:DATA?";
-                }
-                else if (model.StartsWith("MSO5"))
-                {
-                    this.turnGrayscaleCommands = new string[] { ":SAVE:IMAGE:COLOR?", ":SAVE:IMAGE:COLOR {0}", "GRAY", "COLor" };
-                    this.invertCommands = new string[] { ":SAVE:IMAGE:INVERT?", ":SAVE:IMAGE:INVERT {0}", "1", "0" };
-                    this.getDataCommand = "DISP:DATA?";
-                }
-                else
-                {
-                    MessageBox.Show("This Rigol Device is not currently supported");
-                    this.turnGrayscaleCommands = new string[] { "", "", "" };
-                    this.invertCommands = new string[] { "", "", "" };
-                    this.getDataCommand = "";
-                }
+                Regex find1 = new System.Text.RegularExpressions.Regex("DS1[0-9][0-9][0-9][ZB]");
+                Regex find2 = new System.Text.RegularExpressions.Regex("MSO5[0-9][0-9][0-9]");
+                Regex find3 = new System.Text.RegularExpressions.Regex("TBS2[0-9][0-9][0-9]");
+
+            if (find1.IsMatch(model))
+            {
+                this.turnGrayscaleCommands = new string[] { ":STORage:IMAGE:COLOR?", ":STORage:IMAGE:COLOR {0}", "OFF", "ON" };
+                this.invertCommands = new string[] { ":STORage:IMAGE:INVERT?", ":STORage:IMAGE:INVERT {0}", "ON", "Off" };
+                this.getDataCommand = "DISP:DATA?";
+                this.imgGrabFunction = getImage;
+                return true;
+            }
+            else if (find2.IsMatch(model))
+            {
+                this.turnGrayscaleCommands = new string[] { ":SAVE:IMAGE:COLOR?", ":SAVE:IMAGE:COLOR {0}", "GRAY", "COLor" };
+                this.invertCommands = new string[] { ":SAVE:IMAGE:INVERT?", ":SAVE:IMAGE:INVERT {0}", "1", "0" };
+                this.getDataCommand = "DISP:DATA?";
+                this.imgGrabFunction = getImage;
+                return true;
+            }
+            else if (find3.IsMatch(model))
+            {
+                this.turnGrayscaleCommands = new string[] { "", "", "", "" };
+                this.invertCommands = new string[] { "", "", "", "" };
+                this.getDataCommand = "HARDCOPY START";
+                this.imgGrabFunction = getJFIFImage;
+                return true;
             }
             else
             {
-                MessageBox.Show("This Device is not currently supported");
+                MessageBox.Show("This Device is not currently supported but you can use SCPI commands.");
+                this.turnGrayscaleCommands = new string[] { "", "", "", "" };
+                this.invertCommands = new string[] { "", "", "", "" };
+                this.getDataCommand = "";
+                this.Live = false;
+                return false;
+            }
+            /*}
+            else
+            {
+                MessageBox.Show("This Rigol Device is not currently supported but you can use SCPI commands.");
                 this.turnGrayscaleCommands = new string[] { "", "", "" };
                 this.invertCommands = new string[] { "", "", "" };
                 this.getDataCommand = "";
+                this.Live = false;
+                return false;
             }
-
+            */
         }
 
         //SCPI helper function to deal with escape chars
@@ -847,6 +919,29 @@ namespace ScopeSnapSharp
             return s.Replace("\n", "\\n").Replace("\r", "\\r");
         }
 
+
+
+        private byte[] getJFIFImage()
+        {
+            //string getDataCmd = "DISP:DATA?"; // mso5000
+            //string getDataCmd = "DISP:DATA? ON,ON,BMP"; //DS1054Z
+            string getDataCmd = this.getDataCommand;
+
+
+            mbSession.RawIO.Write(ReplaceCommonEscapeSequences("*CLS"));
+            //mbSession.TimeoutMilliseconds = 10 * 1000;
+            string textToWrite = ReplaceCommonEscapeSequences(getDataCmd);
+            mbSession.RawIO.Write(textToWrite);
+            List<byte> results = new List<byte>();
+            byte[] packet = new byte[8192];
+            ReadStatus rS;
+            do
+            {
+                packet = mbSession.RawIO.Read(8192, out rS);
+                results.AddRange(packet);
+            } while (rS != ReadStatus.EndReceived);
+            return results.ToArray();
+        }
 
         // retrieve an image from the instrument. can be run from a background thread.
         private byte[] getImage()
