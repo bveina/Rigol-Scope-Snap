@@ -297,10 +297,15 @@ namespace ScopeSnapSharp
             // we finally have a bitmap, convert it to a bitmap.
             MemoryStream ms = new MemoryStream();
             ms.Write(lastPacket, 0, Convert.ToInt32(lastPacket.Length));
-            if (model != null)
+            // removing this fixes the resize bug that tries to display a new image while resizing.
+            // this will stay until the next code clean up at which time if no memory or display issues have occured,
+            // this can be removed from the code base.
+            /*
+            if (model != null)   
             {
                 model.Dispose();
             }
+            */
             model = new Bitmap(ms, false);
             e.Result = e.Argument; // the result is the picture box we want to populate...
         }
@@ -472,6 +477,7 @@ namespace ScopeSnapSharp
                         MessageBox.Show(ex.Message);
                         SetupControlState(false);
                         mbSession.Dispose();
+                        setMessage("Disconnected");
                     }
                 }
             }
@@ -520,6 +526,7 @@ namespace ScopeSnapSharp
             {
                 SetupControlState(false);
                 mbSession.Dispose();
+                setMessage("Disconnected");
             }
         }
         private void btnConnect_Click(object sender, EventArgs e)
@@ -575,12 +582,14 @@ namespace ScopeSnapSharp
                 MessageBox.Show("Scope Lost Contact", "Error Sending Touch Request");
                 SetupControlState(false);
                 mbSession.Dispose();
+                setMessage("Disconnected");
             }
             catch (Exception exp)
             {
                 MessageBox.Show(exp.Message, "Error Sending Touch Request");
                 SetupControlState(false);
                 mbSession.Dispose();
+                setMessage("Disconnected");
             }
 
         }
