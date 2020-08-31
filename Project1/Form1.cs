@@ -389,9 +389,28 @@ namespace ScopeSnapSharp
         #endregion
 
 
+        public bool NIVisaExists()
+        {
+            try
+            {
+                var rmSession = new ResourceManager();
+                return true;
+            }
+            catch(Exception)
+            {
+                return false;
+            }
+        }
+
         // starts a background worker
         private void BeginSearchConnections()
         {
+            if (NIVisaExists()==false)
+            {
+                MessageBox.Show("cant find NIVisa, this is going to be a big problem!");
+                return;
+            }
+
             if (listBox1.Items.Contains(textBox1.Text))
             {
                 textBox1.Text = "";
