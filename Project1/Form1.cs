@@ -27,8 +27,23 @@ namespace ScopeSnapSharp
         private Func<byte[]> imgGrabFunction;
         Size LastPicSize = new Size(0, 0);
 
-        public BindingList<string> resourceList { get; set; }
 
+        // databinding for available SCPI devices in a listbox
+        public BindingList<string> resourceList { get; set; }
+        
+        private int _ScreenUpdate_mS;
+        public int ScreenUpdateRate
+        {
+            get
+            {
+                return _ScreenUpdate_mS;
+            }
+            set
+            {
+                if (value < 500) return;
+                _ScreenUpdate_mS = value;
+            }
+        }
         private string[] invertCommands;
         private string[] turnGrayscaleCommands;
         private string getDataCommand;
@@ -45,6 +60,7 @@ namespace ScopeSnapSharp
                 if (liveToolStripMenuItem.Checked != _live) liveToolStripMenuItem.Checked = _live;
                 if (checkBox1.Checked != _live) checkBox1.Checked = _live;
                 t.Enabled = _live;
+                
 
             }
         }
@@ -120,9 +136,9 @@ namespace ScopeSnapSharp
         }
         public void setGrayscale(bool gray)
         {
-            if (turnGrayscaleCommands[1] == "") ;
-            if (turnGrayscaleCommands[2] == "") ;
-            if (turnGrayscaleCommands[3] == "") ;
+            if (turnGrayscaleCommands[1] == "") return;
+            if (turnGrayscaleCommands[2] == "") return;
+            if (turnGrayscaleCommands[3] == "") return;
 
             lock (mbSession)
             {
@@ -151,8 +167,9 @@ namespace ScopeSnapSharp
         public Form1()
         {
             InitializeComponent();
+            validateUpdateTime("2000", out _ScreenUpdate_mS);
             t = new Timer();
-            t.Interval = 1000;
+            t.Interval = ScreenUpdateRate;
             t.Tick += T_Tick;
             SetupControlState(false);
             FailCount = 0;
@@ -167,9 +184,33 @@ namespace ScopeSnapSharp
             // setup data bindind for the Instrument Listbox
             this.resourceList = new BindingList<string>();
             this.listBox1.DataSource = resourceList;
+
+            Binding updateBnd = new Binding("Text", this, "ScreenUpdateRate", true);
+            updateBnd.BindingComplete += Form1_BindingComplete;
+            updateBnd.Parse += Form1_Parse;
+            txtUpdateSpeed.DataBindings.Add(updateBnd);
+            
+
+            
+            //this.updateLabel = new Binding("ScreenUpdateRate",ScreenUpdateRate,)
             Application.EnableVisualStyles();
         }
 
+        private void Form1_Parse(object sender, ConvertEventArgs e)
+        {
+            int tmp;
+            if (int.TryParse((string)e.Value,out tmp))
+            {
+                e.Value = tmp;
+            }
+            
+            
+        }
+
+        private void Form1_BindingComplete(object sender, BindingCompleteEventArgs e)
+        {
+            System.Console.WriteLine(e);
+        }
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -202,7 +243,8 @@ namespace ScopeSnapSharp
                     this.Live = true;
                     this.beginSearchConnections();
                 }
-
+               // txtScreenUpdateRate.
+               //this.DataBindings.Add("ScreenUpdateTime",txtScreenUpdateRate,"text",)
             }
             catch (Exception ex)
             {
@@ -214,6 +256,11 @@ namespace ScopeSnapSharp
         private void updateScreen(PictureBox pb)
         {
             toolStripProgressBar1.Style = ProgressBarStyle.Marquee;
+            if (this.imgGrabFunction ==null)
+            {
+                toolStripProgressBar1.Style = ProgressBarStyle.Continuous;
+                return;
+            }
             if (ImageGrabber.IsBusy) return;
             ImageGrabber.RunWorkerAsync(pb);
         }
@@ -221,32 +268,19 @@ namespace ScopeSnapSharp
         #region Image Grabber Background Task
         private void ImageGrabber_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (mbSession == null || mbSession.IsDisposed) return;
+            
 
 
             //query what the scope is doing for image settings and setup controls to reflect that
-            string s;
             lock (mbSession)
             {
+                if (mbSession == null || mbSession.IsDisposed) return;
+
                 try
                 {
-
-                    //mbSession.RawIO.Write(":SAVE:IMAGE:INVERT?"); //MSO5000
-                    //mbSession.RawIO.Write(":STORAGE:IMAGE:INVERT?"); //DS1000Z
-                    //mbSession.RawIO.Write(invertCommands[0]);
-                    //s = mbSession.FormattedIO.ReadLine();
-                    // TODO: set this in a threadsafe way
-                    //if (s.Trim() == invertCommands[2]) // if on
-                    //    invertToolStripMenuItem.Checked = true;
-                    invertToolStripMenuItem.Checked = getInvertStatus();
-                    //mbSession.RawIO.Write(":SAVE:IMAGE:COLOR?");
-                    //mbSession.RawIO.Write(":STORAGE:IMAGE:COLOR?");
-                    //mbSession.RawIO.Write(turnGrayscaleCommands[0]);
-                    //s = mbSession.FormattedIO.ReadLine();
-                    // TODO: set this in a threadsafe way
-                    //if (s.Trim() == turnGrayscaleCommands[2])
-                    //    grayscaleToolStripMenuItem.Checked = true;
-                    grayscaleToolStripMenuItem.Checked = getGrayscaleStatus();
+                    //Use invoke to make this happen. or use a data binding.
+                    //invertToolStripMenuItem.Checked = getInvertStatus();
+                    //grayscaleToolStripMenuItem.Checked = getGrayscaleStatus();
                 }
                 catch (Ivi.Visa.VisaException ex)
                 {
@@ -328,7 +362,10 @@ namespace ScopeSnapSharp
                 if (FailCount > 5)
                 {
                     SetupControlState(false);
-                    mbSession.Dispose();
+                    lock (mbSession)
+                    {
+                        mbSession.Dispose();
+                    }
                     setMessage("Disconnected!");
                     MessageBox.Show("There was a problem while grabbbing an image, please reconnect to the Scope");
                 }
@@ -416,9 +453,6 @@ namespace ScopeSnapSharp
             }
             else
             {
-                // this will probably never happen since it should be caught by the above try block.
-                // TODO: run code coverege and see if this can be refactored
-                //MessageBox.Show("could not find any lab equipment, check your connections?","Error Connecting");
                 setMessage("No Instruments Found.");
             }
         }
@@ -460,28 +494,34 @@ namespace ScopeSnapSharp
         {
             
             t.Enabled = false;
-            if (mbSession == null || mbSession.IsDisposed) return;
+            if (mbSession == null) return;
             if (this.Live)
             {
-                try
+                lock (mbSession)
                 {
-                    //starts up a background thread
-                    updateScreen(pictureBox1);
-                    //FailCount = 0;
-                }
-                catch ( Exception ex)
-                {
-                    FailCount++;
-                    if (FailCount > 5)
+                    try
                     {
-                        MessageBox.Show(ex.Message);
-                        SetupControlState(false);
-                        mbSession.Dispose();
-                        setMessage("Disconnected");
+                        if (mbSession == null || mbSession.IsDisposed) return;
+                        //starts up a background thread
+                        updateScreen(pictureBox1);
+                        //FailCount = 0;
+                    }
+                    catch (Exception ex)
+                    {
+                        FailCount++;
+                        if (FailCount > 5)
+                        {
+                            MessageBox.Show(ex.Message);
+                            SetupControlState(false);
+                            mbSession.Dispose();
+                            setMessage("Disconnected");
+                        }
                     }
                 }
             }
+            t.Interval = this.ScreenUpdateRate;
             t.Enabled = true;
+            
 
         }
 
@@ -493,7 +533,10 @@ namespace ScopeSnapSharp
         // sends a simulated keypress to the scope
         private void cmdSendButtonPress_click(object sender, EventArgs e)
         {
-            mbSession.RawIO.Write(String.Format(":SYST:KEY:PRESS {0}", (string)(sender as Button).Tag));
+            lock (mbSession)
+            {
+                mbSession.RawIO.Write(String.Format(":SYST:KEY:PRESS {0}", (string)(sender as Button).Tag));
+            }
         }
 
 
@@ -556,7 +599,7 @@ namespace ScopeSnapSharp
         {
             if (!Connected)
             {
-                MessageBox.Show("You are not connected to any scope! (did you search AND connect?)", "Error Sending Touch Command");
+                setMessage("You are not connected to any scope! (did you search AND connect?)");
                 return;
             }
             MouseEventArgs ee = e as MouseEventArgs;
@@ -570,28 +613,29 @@ namespace ScopeSnapSharp
             convertCoordinates(ee.X, ee.Y, out myX, out myY);
             if (myX < 0 || myY < 0) return;
             string txt2Send = string.Format(":SYSTem:TOUCh {0}, {1}", myX, myY);
-            try
+            lock (mbSession)
             {
-                lock (mbSession)
+
+                try
                 {
                     mbSession.RawIO.Write(txt2Send);
                 }
-            }
-            catch (Ivi.Visa.IOTimeoutException)
-            {
-                MessageBox.Show("Scope Lost Contact", "Error Sending Touch Request");
-                SetupControlState(false);
-                mbSession.Dispose();
-                setMessage("Disconnected");
-            }
-            catch (Exception exp)
-            {
-                MessageBox.Show(exp.Message, "Error Sending Touch Request");
-                SetupControlState(false);
-                mbSession.Dispose();
-                setMessage("Disconnected");
-            }
 
+                catch (Ivi.Visa.IOTimeoutException)
+                {
+                    MessageBox.Show("Scope Lost Contact", "Error Sending Touch Request");
+                    SetupControlState(false);
+                    mbSession.Dispose();
+                    setMessage("Disconnected");
+                }
+                catch (Exception exp)
+                {
+                    MessageBox.Show(exp.Message, "Error Sending Touch Request");
+                    SetupControlState(false);
+                    mbSession.Dispose();
+                    setMessage("Disconnected");
+                }
+            }
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
@@ -672,7 +716,7 @@ namespace ScopeSnapSharp
             try
             {
                 convertCoordinates(e.X, e.Y, out myX, out myY);
-                toolStripStatusLabel1.Text = String.Format("Position:({0}, {1})", myX, myY);
+                toolStripLblPosition.Text = String.Format("Position:({0}, {1})", myX, myY);
             }
             catch (Exception ex)
             {
@@ -804,17 +848,23 @@ namespace ScopeSnapSharp
             if (res == "")
             {
                 setMessage("No Resouce Selected - Choose search, then select an item from the list");
-                //MessageBox.Show("Choose search, then select an item from the list", "No Resouce Selected");
                 return;
             }
             Cursor.Current = Cursors.WaitCursor;
-            setMessage("Connecting to "+res);
+            setMessage("Connecting to " + res);
 
             using (var rmSession = new ResourceManager())
             {
+                ResourceOpenStatus myStatus;
                 try
                 {
-                    mbSession = (MessageBasedSession)rmSession.Open(res);
+                    mbSession = (MessageBasedSession)rmSession.Open(res, AccessModes.ExclusiveLock, 10, out myStatus);
+                    if (myStatus != ResourceOpenStatus.Success)
+                    {
+                        SetupControlState(false);
+                        setMessage("there was an error while trying to open that device.");
+                        return;
+                    }
                     SetupControlState(true);
                     // at this point we are connected, lets get our initial image
                     // TODO: does this really belong in this connect method?
@@ -828,7 +878,7 @@ namespace ScopeSnapSharp
                         return;
                     }
 
-                    if (invertToolStripMenuItem.Checked && invertCommands[1] !="")
+                    if (invertToolStripMenuItem.Checked && invertCommands[1] != "")
                     {
                         //mbSession.RawIO.Write(":SAVE:IMAGE:INVERT ON");
                         mbSession.RawIO.Write(string.Format(invertCommands[1], invertCommands[2]));
@@ -840,16 +890,16 @@ namespace ScopeSnapSharp
                     }
                     updateScreen(pictureBox1);
                     Settings.Default.LastConnectionSuccessful = true;
-                    
+
                 }
                 catch (InvalidCastException)
                 {
                     setMessage("Could not connect to " + res);
-                    //MessageBox.Show("Resouce selected must be a message-based session","Connect Error");
+
                 }
                 catch (Exception exp)
                 {
-                    
+
                     MessageBox.Show(exp.Message, "Connect Error");
                     //TODO: log this error
                 }
@@ -857,6 +907,7 @@ namespace ScopeSnapSharp
                 {
                     Cursor.Current = Cursors.Default;
                 }
+
             }
         }
 
@@ -904,17 +955,8 @@ namespace ScopeSnapSharp
                 this.Live = false;
                 return false;
             }
-            /*}
-            else
-            {
-                MessageBox.Show("This Rigol Device is not currently supported but you can use SCPI commands.");
-                this.turnGrayscaleCommands = new string[] { "", "", "" };
-                this.invertCommands = new string[] { "", "", "" };
-                this.getDataCommand = "";
-                this.Live = false;
-                return false;
-            }
-            */
+
+
         }
 
         //SCPI helper function to deal with escape chars
@@ -930,6 +972,8 @@ namespace ScopeSnapSharp
 
 
 
+        // excpects that it already has a lock on mbSession.
+        // can be run from a background thread.
         private byte[] getJFIFImage()
         {
             //string getDataCmd = "DISP:DATA?"; // mso5000
@@ -953,6 +997,7 @@ namespace ScopeSnapSharp
         }
 
         // retrieve an image from the instrument. can be run from a background thread.
+        // excpects that it already has a lock on mbSession.
         private byte[] getImage()
         {
             //string getDataCmd = "DISP:DATA?"; // mso5000
@@ -971,6 +1016,7 @@ namespace ScopeSnapSharp
             }
             int tmcHeaderSize = tmcSize[1] - '0';
             byte[] packetSizeString = mbSession.RawIO.Read(tmcHeaderSize);
+            
             int packetSize;
             if (!int.TryParse(System.Text.Encoding.ASCII.GetString(packetSizeString), out packetSize))
             {
@@ -1109,6 +1155,50 @@ namespace ScopeSnapSharp
         private void txtSCPIresponse_Leave(object sender, EventArgs e)
         {
             txtSCPIresponse.SelectionLength = 0;
+        }
+
+        
+
+        private bool validateUpdateTime(string input,out int val)
+        {
+            int tmp;
+            bool valid = int.TryParse(input, out tmp);
+            val = tmp;
+            this.ScreenUpdateRate = val;
+            if (valid)
+            {
+                toolStripStatusUpdateSpeed.Text = string.Format("Update (mS): {0}", ScreenUpdateRate);
+            }
+
+            return valid;
+        }
+
+        private void txtUpdateSpeed_Validating(object sender, CancelEventArgs e)
+        {
+            System.Console.WriteLine("Validating");
+            int tmp;
+            e.Cancel = !validateUpdateTime(txtUpdateSpeed.Text, out tmp);
+            
+                
+        }
+
+        private void txtUpdateSpeed_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            
+        }
+
+        private void txtUpdateSpeed_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                checkBox1.Focus();
+                //this.ActiveControl = null;
+            }
+        }
+
+        private void txtUpdateSpeed_Leave(object sender, EventArgs e)
+        {
+            System.Console.WriteLine("Leaving");
         }
     }
 }

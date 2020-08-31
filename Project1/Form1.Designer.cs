@@ -49,8 +49,9 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.toolstripLabelMessage = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripSpring = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripLblPosition = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusUpdateSpeed = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newConnectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -68,6 +69,7 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.usageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.txtUpdateSpeed = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -98,8 +100,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tableLayoutPanel1);
-            this.splitContainer1.Size = new System.Drawing.Size(1236, 528);
-            this.splitContainer1.SplitterDistance = 894;
+            this.splitContainer1.Size = new System.Drawing.Size(1050, 618);
+            this.splitContainer1.SplitterDistance = 758;
             this.splitContainer1.TabIndex = 1;
             // 
             // splitContainer2
@@ -116,8 +118,8 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.pictureBox1);
-            this.splitContainer2.Size = new System.Drawing.Size(894, 528);
-            this.splitContainer2.SplitterDistance = 59;
+            this.splitContainer2.Size = new System.Drawing.Size(758, 618);
+            this.splitContainer2.SplitterDistance = 49;
             this.splitContainer2.SplitterWidth = 3;
             this.splitContainer2.TabIndex = 1;
             // 
@@ -131,7 +133,7 @@
             this.tblLayoutButtons.Name = "tblLayoutButtons";
             this.tblLayoutButtons.RowCount = 1;
             this.tblLayoutButtons.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblLayoutButtons.Size = new System.Drawing.Size(59, 528);
+            this.tblLayoutButtons.Size = new System.Drawing.Size(49, 618);
             this.tblLayoutButtons.TabIndex = 0;
             // 
             // pictureBox1
@@ -141,7 +143,7 @@
             this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox1.Location = new System.Drawing.Point(0, 0);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(832, 528);
+            this.pictureBox1.Size = new System.Drawing.Size(706, 618);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
@@ -150,9 +152,10 @@
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.ColumnCount = 2;
+            this.tableLayoutPanel1.ColumnCount = 3;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel1.Controls.Add(this.btnSearch, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.textBox1, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.btnConnect, 1, 2);
@@ -161,6 +164,7 @@
             this.tableLayoutPanel1.Controls.Add(this.btnGrab, 0, 7);
             this.tableLayoutPanel1.Controls.Add(this.checkBox1, 1, 7);
             this.tableLayoutPanel1.Controls.Add(this.tblLayoutAdvanced, 0, 4);
+            this.tableLayoutPanel1.Controls.Add(this.txtUpdateSpeed, 2, 7);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -173,7 +177,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(338, 528);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(288, 618);
             this.tableLayoutPanel1.TabIndex = 5;
             // 
             // btnSearch
@@ -181,7 +185,7 @@
             this.btnSearch.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnSearch.Location = new System.Drawing.Point(3, 183);
             this.btnSearch.Name = "btnSearch";
-            this.btnSearch.Size = new System.Drawing.Size(163, 24);
+            this.btnSearch.Size = new System.Drawing.Size(138, 24);
             this.btnSearch.TabIndex = 1;
             this.btnSearch.Text = "Search";
             this.btnSearch.UseVisualStyleBackColor = true;
@@ -189,21 +193,22 @@
             // 
             // textBox1
             // 
-            this.tableLayoutPanel1.SetColumnSpan(this.textBox1, 2);
+            this.tableLayoutPanel1.SetColumnSpan(this.textBox1, 3);
             this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.textBox1.Location = new System.Drawing.Point(3, 157);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(332, 20);
+            this.textBox1.Size = new System.Drawing.Size(282, 20);
             this.textBox1.TabIndex = 4;
             this.textBox1.DoubleClick += new System.EventHandler(this.textBox1_DoubleClick);
             // 
             // btnConnect
             // 
+            this.tableLayoutPanel1.SetColumnSpan(this.btnConnect, 2);
             this.btnConnect.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnConnect.Location = new System.Drawing.Point(172, 183);
+            this.btnConnect.Location = new System.Drawing.Point(147, 183);
             this.btnConnect.Name = "btnConnect";
-            this.btnConnect.Size = new System.Drawing.Size(163, 24);
+            this.btnConnect.Size = new System.Drawing.Size(138, 24);
             this.btnConnect.TabIndex = 6;
             this.btnConnect.Text = "Connect";
             this.btnConnect.UseVisualStyleBackColor = true;
@@ -211,22 +216,23 @@
             // 
             // listBox1
             // 
-            this.tableLayoutPanel1.SetColumnSpan(this.listBox1, 2);
+            this.tableLayoutPanel1.SetColumnSpan(this.listBox1, 3);
             this.listBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listBox1.FormattingEnabled = true;
             this.listBox1.Location = new System.Drawing.Point(3, 3);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(332, 148);
+            this.listBox1.Size = new System.Drawing.Size(282, 148);
+            this.listBox1.Sorted = true;
             this.listBox1.TabIndex = 2;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
             // btnSave
             // 
-            this.tableLayoutPanel1.SetColumnSpan(this.btnSave, 2);
+            this.tableLayoutPanel1.SetColumnSpan(this.btnSave, 3);
             this.btnSave.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnSave.Location = new System.Drawing.Point(3, 441);
+            this.btnSave.Location = new System.Drawing.Point(3, 531);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(332, 54);
+            this.btnSave.Size = new System.Drawing.Size(282, 54);
             this.btnSave.TabIndex = 7;
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
@@ -235,9 +241,9 @@
             // btnGrab
             // 
             this.btnGrab.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnGrab.Location = new System.Drawing.Point(3, 501);
+            this.btnGrab.Location = new System.Drawing.Point(3, 591);
             this.btnGrab.Name = "btnGrab";
-            this.btnGrab.Size = new System.Drawing.Size(163, 24);
+            this.btnGrab.Size = new System.Drawing.Size(138, 24);
             this.btnGrab.TabIndex = 8;
             this.btnGrab.Text = "Grab";
             this.btnGrab.UseVisualStyleBackColor = true;
@@ -246,9 +252,9 @@
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(172, 501);
+            this.checkBox1.Location = new System.Drawing.Point(147, 591);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(84, 17);
+            this.checkBox1.Size = new System.Drawing.Size(66, 17);
             this.checkBox1.TabIndex = 9;
             this.checkBox1.Text = "Live Update";
             this.checkBox1.UseVisualStyleBackColor = true;
@@ -259,7 +265,7 @@
             this.tblLayoutAdvanced.AutoSize = true;
             this.tblLayoutAdvanced.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Outset;
             this.tblLayoutAdvanced.ColumnCount = 2;
-            this.tableLayoutPanel1.SetColumnSpan(this.tblLayoutAdvanced, 2);
+            this.tableLayoutPanel1.SetColumnSpan(this.tblLayoutAdvanced, 3);
             this.tblLayoutAdvanced.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tblLayoutAdvanced.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tblLayoutAdvanced.Controls.Add(this.txtSCPIcmd, 0, 0);
@@ -275,7 +281,7 @@
             this.tblLayoutAdvanced.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblLayoutAdvanced.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblLayoutAdvanced.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
-            this.tblLayoutAdvanced.Size = new System.Drawing.Size(334, 143);
+            this.tblLayoutAdvanced.Size = new System.Drawing.Size(284, 143);
             this.tblLayoutAdvanced.TabIndex = 10;
             // 
             // txtSCPIcmd
@@ -287,16 +293,16 @@
             this.txtSCPIcmd.Multiline = true;
             this.txtSCPIcmd.Name = "txtSCPIcmd";
             this.txtSCPIcmd.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtSCPIcmd.Size = new System.Drawing.Size(326, 45);
+            this.txtSCPIcmd.Size = new System.Drawing.Size(276, 45);
             this.txtSCPIcmd.TabIndex = 14;
             // 
             // cmdReadSCPI
             // 
             this.cmdReadSCPI.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdReadSCPI.Location = new System.Drawing.Point(171, 55);
+            this.cmdReadSCPI.Location = new System.Drawing.Point(145, 55);
             this.cmdReadSCPI.Margin = new System.Windows.Forms.Padding(2);
             this.cmdReadSCPI.Name = "cmdReadSCPI";
-            this.cmdReadSCPI.Size = new System.Drawing.Size(159, 20);
+            this.cmdReadSCPI.Size = new System.Drawing.Size(135, 20);
             this.cmdReadSCPI.TabIndex = 16;
             this.cmdReadSCPI.Text = "Query";
             this.cmdReadSCPI.UseVisualStyleBackColor = true;
@@ -307,7 +313,7 @@
             this.cmdWriteSCPI.Location = new System.Drawing.Point(4, 55);
             this.cmdWriteSCPI.Margin = new System.Windows.Forms.Padding(2);
             this.cmdWriteSCPI.Name = "cmdWriteSCPI";
-            this.cmdWriteSCPI.Size = new System.Drawing.Size(159, 20);
+            this.cmdWriteSCPI.Size = new System.Drawing.Size(135, 20);
             this.cmdWriteSCPI.TabIndex = 15;
             this.cmdWriteSCPI.Text = "Write";
             this.cmdWriteSCPI.UseVisualStyleBackColor = true;
@@ -325,7 +331,7 @@
             this.txtSCPIresponse.Name = "txtSCPIresponse";
             this.txtSCPIresponse.ReadOnly = true;
             this.txtSCPIresponse.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtSCPIresponse.Size = new System.Drawing.Size(316, 48);
+            this.txtSCPIresponse.Size = new System.Drawing.Size(266, 48);
             this.txtSCPIresponse.TabIndex = 12;
             this.txtSCPIresponse.Leave += new System.EventHandler(this.txtSCPIresponse_Leave);
             // 
@@ -335,11 +341,13 @@
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripProgressBar1,
             this.toolstripLabelMessage,
-            this.toolStripStatusLabel2,
-            this.toolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 558);
+            this.toolStripSpring,
+            this.toolStripLblPosition,
+            this.toolStripStatusUpdateSpeed});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 648);
+            this.statusStrip1.MaximumSize = new System.Drawing.Size(0, 22);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1236, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1050, 22);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -352,21 +360,27 @@
             // toolstripLabelMessage
             // 
             this.toolstripLabelMessage.Name = "toolstripLabelMessage";
+            this.toolstripLabelMessage.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
             this.toolstripLabelMessage.Size = new System.Drawing.Size(56, 17);
             this.toolstripLabelMessage.Text = "Message:";
             // 
-            // toolStripStatusLabel2
+            // toolStripSpring
             // 
-            this.toolStripStatusLabel2.AutoSize = false;
-            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(934, 17);
-            this.toolStripStatusLabel2.Spring = true;
+            this.toolStripSpring.Name = "toolStripSpring";
+            this.toolStripSpring.Size = new System.Drawing.Size(659, 17);
+            this.toolStripSpring.Spring = true;
             // 
-            // toolStripStatusLabel1
+            // toolStripLblPosition
             // 
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(129, 17);
-            this.toolStripStatusLabel1.Text = "Position: Not Initialized";
+            this.toolStripLblPosition.Name = "toolStripLblPosition";
+            this.toolStripLblPosition.Size = new System.Drawing.Size(129, 17);
+            this.toolStripLblPosition.Text = "Position: Not Initialized";
+            // 
+            // toolStripStatusUpdateSpeed
+            // 
+            this.toolStripStatusUpdateSpeed.Name = "toolStripStatusUpdateSpeed";
+            this.toolStripStatusUpdateSpeed.Size = new System.Drawing.Size(89, 17);
+            this.toolStripStatusUpdateSpeed.Text = "UpdateSpeed: 0";
             // 
             // menuStrip1
             // 
@@ -378,7 +392,7 @@
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1236, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1050, 24);
             this.menuStrip1.TabIndex = 3;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -452,7 +466,7 @@
             this.invertToolStripMenuItem.CheckOnClick = true;
             this.invertToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.invertToolStripMenuItem.Name = "invertToolStripMenuItem";
-            this.invertToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.invertToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.invertToolStripMenuItem.Text = "Invert";
             this.invertToolStripMenuItem.Click += new System.EventHandler(this.invertToolStripMenuItem_Click);
             // 
@@ -460,7 +474,7 @@
             // 
             this.grayscaleToolStripMenuItem.CheckOnClick = true;
             this.grayscaleToolStripMenuItem.Name = "grayscaleToolStripMenuItem";
-            this.grayscaleToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.grayscaleToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.grayscaleToolStripMenuItem.Text = "Grayscale";
             this.grayscaleToolStripMenuItem.Click += new System.EventHandler(this.grayscaleToolStripMenuItem_Click);
             // 
@@ -470,7 +484,7 @@
             this.liveToolStripMenuItem.CheckOnClick = true;
             this.liveToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.liveToolStripMenuItem.Name = "liveToolStripMenuItem";
-            this.liveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.liveToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.liveToolStripMenuItem.Text = "Live";
             this.liveToolStripMenuItem.Click += new System.EventHandler(this.liveToolStripMenuItem_Click);
             // 
@@ -478,7 +492,7 @@
             // 
             this.showButtonsToolStripMenuItem.CheckOnClick = true;
             this.showButtonsToolStripMenuItem.Name = "showButtonsToolStripMenuItem";
-            this.showButtonsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.showButtonsToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.showButtonsToolStripMenuItem.Text = "Show Buttons";
             this.showButtonsToolStripMenuItem.Click += new System.EventHandler(this.showButtonsToolStripMenuItem_Click);
             // 
@@ -488,7 +502,7 @@
             this.showRightPanelToolStripMenuItem.CheckOnClick = true;
             this.showRightPanelToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.showRightPanelToolStripMenuItem.Name = "showRightPanelToolStripMenuItem";
-            this.showRightPanelToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.showRightPanelToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.showRightPanelToolStripMenuItem.Text = "Show Right Panel";
             this.showRightPanelToolStripMenuItem.Click += new System.EventHandler(this.showRightPanelToolStripMenuItem_Click);
             // 
@@ -496,7 +510,7 @@
             // 
             this.advancedPanelToolStripMenuItem.CheckOnClick = true;
             this.advancedPanelToolStripMenuItem.Name = "advancedPanelToolStripMenuItem";
-            this.advancedPanelToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.advancedPanelToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.advancedPanelToolStripMenuItem.Text = "Advanced Panel";
             this.advancedPanelToolStripMenuItem.Click += new System.EventHandler(this.advancedPanelToolStripMenuItem_Click);
             // 
@@ -523,11 +537,22 @@
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
+            // txtUpdateSpeed
+            // 
+            this.txtUpdateSpeed.Location = new System.Drawing.Point(219, 591);
+            this.txtUpdateSpeed.Name = "txtUpdateSpeed";
+            this.txtUpdateSpeed.Size = new System.Drawing.Size(66, 20);
+            this.txtUpdateSpeed.TabIndex = 11;
+            this.txtUpdateSpeed.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtUpdateSpeed_KeyDown);
+            this.txtUpdateSpeed.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtUpdateSpeed_KeyPress);
+            this.txtUpdateSpeed.Leave += new System.EventHandler(this.txtUpdateSpeed_Leave);
+            this.txtUpdateSpeed.Validating += new System.ComponentModel.CancelEventHandler(this.txtUpdateSpeed_Validating);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1236, 580);
+            this.ClientSize = new System.Drawing.Size(1050, 670);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.splitContainer1);
@@ -592,14 +617,16 @@
         private System.Windows.Forms.ToolStripMenuItem liveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showRightPanelToolStripMenuItem;
         private System.Windows.Forms.Button cmdWriteSCPI;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripLblPosition;
         private System.Windows.Forms.Button cmdReadSCPI;
         private System.Windows.Forms.TextBox txtSCPIresponse;
         private System.Windows.Forms.TableLayoutPanel tblLayoutAdvanced;
         private System.Windows.Forms.ToolStripMenuItem advancedPanelToolStripMenuItem;
         private System.Windows.Forms.TextBox txtSCPIcmd;
         private System.Windows.Forms.ToolStripStatusLabel toolstripLabelMessage;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripSpring;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusUpdateSpeed;
+        private System.Windows.Forms.TextBox txtUpdateSpeed;
     }
 }
