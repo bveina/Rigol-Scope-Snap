@@ -46,6 +46,7 @@
             this.cmdReadSCPI = new System.Windows.Forms.Button();
             this.cmdWriteSCPI = new System.Windows.Forms.Button();
             this.txtSCPIresponse = new System.Windows.Forms.TextBox();
+            this.txtUpdateSpeed = new System.Windows.Forms.TextBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.toolstripLabelMessage = new System.Windows.Forms.ToolStripStatusLabel();
@@ -69,7 +70,6 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.usageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.txtUpdateSpeed = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -147,8 +147,8 @@
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
-            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
-            this.pictureBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseHover);
+            this.pictureBox1.Click += new System.EventHandler(this.PictureBox1_Click);
+            this.pictureBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PictureBox1_MouseHover);
             // 
             // tableLayoutPanel1
             // 
@@ -189,7 +189,7 @@
             this.btnSearch.TabIndex = 1;
             this.btnSearch.Text = "Search";
             this.btnSearch.UseVisualStyleBackColor = true;
-            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
+            this.btnSearch.Click += new System.EventHandler(this.BtnSearch_Click);
             // 
             // textBox1
             // 
@@ -200,7 +200,7 @@
             this.textBox1.ReadOnly = true;
             this.textBox1.Size = new System.Drawing.Size(282, 20);
             this.textBox1.TabIndex = 4;
-            this.textBox1.DoubleClick += new System.EventHandler(this.textBox1_DoubleClick);
+            this.textBox1.DoubleClick += new System.EventHandler(this.TextBox1_DoubleClick);
             // 
             // btnConnect
             // 
@@ -212,7 +212,7 @@
             this.btnConnect.TabIndex = 6;
             this.btnConnect.Text = "Connect";
             this.btnConnect.UseVisualStyleBackColor = true;
-            this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
+            this.btnConnect.Click += new System.EventHandler(this.BtnConnect_Click);
             // 
             // listBox1
             // 
@@ -224,7 +224,7 @@
             this.listBox1.Size = new System.Drawing.Size(282, 148);
             this.listBox1.Sorted = true;
             this.listBox1.TabIndex = 2;
-            this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
+            this.listBox1.SelectedIndexChanged += new System.EventHandler(this.ListBox1_SelectedIndexChanged);
             // 
             // btnSave
             // 
@@ -236,7 +236,7 @@
             this.btnSave.TabIndex = 7;
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            this.btnSave.Click += new System.EventHandler(this.BtnSave_Click);
             // 
             // btnGrab
             // 
@@ -247,7 +247,7 @@
             this.btnGrab.TabIndex = 8;
             this.btnGrab.Text = "Grab";
             this.btnGrab.UseVisualStyleBackColor = true;
-            this.btnGrab.Click += new System.EventHandler(this.btnGrab_Click);
+            this.btnGrab.Click += new System.EventHandler(this.BtnGrab_Click);
             // 
             // checkBox1
             // 
@@ -258,7 +258,7 @@
             this.checkBox1.TabIndex = 9;
             this.checkBox1.Text = "Live Update";
             this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.CheckBox1_CheckedChanged);
             // 
             // tblLayoutAdvanced
             // 
@@ -306,7 +306,7 @@
             this.cmdReadSCPI.TabIndex = 16;
             this.cmdReadSCPI.Text = "Query";
             this.cmdReadSCPI.UseVisualStyleBackColor = true;
-            this.cmdReadSCPI.Click += new System.EventHandler(this.cmdQuerySCPI_Click);
+            this.cmdReadSCPI.Click += new System.EventHandler(this.CmdQuerySCPI_Click);
             // 
             // cmdWriteSCPI
             // 
@@ -317,7 +317,7 @@
             this.cmdWriteSCPI.TabIndex = 15;
             this.cmdWriteSCPI.Text = "Write";
             this.cmdWriteSCPI.UseVisualStyleBackColor = true;
-            this.cmdWriteSCPI.Click += new System.EventHandler(this.cmdSCPISend_Click);
+            this.cmdWriteSCPI.Click += new System.EventHandler(this.CmdSCPISend_Click);
             // 
             // txtSCPIresponse
             // 
@@ -333,7 +333,17 @@
             this.txtSCPIresponse.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtSCPIresponse.Size = new System.Drawing.Size(266, 48);
             this.txtSCPIresponse.TabIndex = 12;
-            this.txtSCPIresponse.Leave += new System.EventHandler(this.txtSCPIresponse_Leave);
+            this.txtSCPIresponse.Leave += new System.EventHandler(this.TxtSCPIresponse_Leave);
+            // 
+            // txtUpdateSpeed
+            // 
+            this.txtUpdateSpeed.Location = new System.Drawing.Point(219, 591);
+            this.txtUpdateSpeed.Name = "txtUpdateSpeed";
+            this.txtUpdateSpeed.Size = new System.Drawing.Size(66, 20);
+            this.txtUpdateSpeed.TabIndex = 11;
+            this.txtUpdateSpeed.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TxtUpdateSpeed_KeyDown);
+            this.txtUpdateSpeed.Leave += new System.EventHandler(this.TxtUpdateSpeed_Leave);
+            this.txtUpdateSpeed.Validating += new System.ComponentModel.CancelEventHandler(this.TxtUpdateSpeed_Validating);
             // 
             // statusStrip1
             // 
@@ -412,7 +422,7 @@
             this.newConnectionToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
             this.newConnectionToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.newConnectionToolStripMenuItem.Text = "&New Connection";
-            this.newConnectionToolStripMenuItem.Click += new System.EventHandler(this.newConnectionToolStripMenuItem_Click);
+            this.newConnectionToolStripMenuItem.Click += new System.EventHandler(this.NewConnectionToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
@@ -421,14 +431,14 @@
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
             this.saveToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.saveToolStripMenuItem.Text = "&Save";
-            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.SaveToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
-            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
             // editToolStripMenuItem
             // 
@@ -444,7 +454,7 @@
             this.copyToolStripMenuItem1.ShortcutKeyDisplayString = "Ctrl+C";
             this.copyToolStripMenuItem1.Size = new System.Drawing.Size(144, 22);
             this.copyToolStripMenuItem1.Text = "&Copy";
-            this.copyToolStripMenuItem1.Click += new System.EventHandler(this.copyToolStripMenuItem1_Click);
+            this.copyToolStripMenuItem1.Click += new System.EventHandler(this.CopyToolStripMenuItem1_Click);
             // 
             // pictureOptionsToolStripMenuItem
             // 
@@ -458,7 +468,7 @@
             this.pictureOptionsToolStripMenuItem.Name = "pictureOptionsToolStripMenuItem";
             this.pictureOptionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.pictureOptionsToolStripMenuItem.Text = "Options";
-            this.pictureOptionsToolStripMenuItem.Click += new System.EventHandler(this.pictureOptionsToolStripMenuItem_Click);
+            this.pictureOptionsToolStripMenuItem.Click += new System.EventHandler(this.PictureOptionsToolStripMenuItem_Click);
             // 
             // invertToolStripMenuItem
             // 
@@ -468,7 +478,7 @@
             this.invertToolStripMenuItem.Name = "invertToolStripMenuItem";
             this.invertToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.invertToolStripMenuItem.Text = "Invert";
-            this.invertToolStripMenuItem.Click += new System.EventHandler(this.invertToolStripMenuItem_Click);
+            this.invertToolStripMenuItem.Click += new System.EventHandler(this.InvertToolStripMenuItem_Click);
             // 
             // grayscaleToolStripMenuItem
             // 
@@ -476,7 +486,7 @@
             this.grayscaleToolStripMenuItem.Name = "grayscaleToolStripMenuItem";
             this.grayscaleToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.grayscaleToolStripMenuItem.Text = "Grayscale";
-            this.grayscaleToolStripMenuItem.Click += new System.EventHandler(this.grayscaleToolStripMenuItem_Click);
+            this.grayscaleToolStripMenuItem.Click += new System.EventHandler(this.GrayscaleToolStripMenuItem_Click);
             // 
             // liveToolStripMenuItem
             // 
@@ -486,7 +496,7 @@
             this.liveToolStripMenuItem.Name = "liveToolStripMenuItem";
             this.liveToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.liveToolStripMenuItem.Text = "Live";
-            this.liveToolStripMenuItem.Click += new System.EventHandler(this.liveToolStripMenuItem_Click);
+            this.liveToolStripMenuItem.Click += new System.EventHandler(this.LiveToolStripMenuItem_Click);
             // 
             // showButtonsToolStripMenuItem
             // 
@@ -494,7 +504,7 @@
             this.showButtonsToolStripMenuItem.Name = "showButtonsToolStripMenuItem";
             this.showButtonsToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.showButtonsToolStripMenuItem.Text = "Show Buttons";
-            this.showButtonsToolStripMenuItem.Click += new System.EventHandler(this.showButtonsToolStripMenuItem_Click);
+            this.showButtonsToolStripMenuItem.Click += new System.EventHandler(this.ShowButtonsToolStripMenuItem_Click);
             // 
             // showRightPanelToolStripMenuItem
             // 
@@ -504,7 +514,7 @@
             this.showRightPanelToolStripMenuItem.Name = "showRightPanelToolStripMenuItem";
             this.showRightPanelToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.showRightPanelToolStripMenuItem.Text = "Show Right Panel";
-            this.showRightPanelToolStripMenuItem.Click += new System.EventHandler(this.showRightPanelToolStripMenuItem_Click);
+            this.showRightPanelToolStripMenuItem.Click += new System.EventHandler(this.ShowRightPanelToolStripMenuItem_Click);
             // 
             // advancedPanelToolStripMenuItem
             // 
@@ -512,7 +522,7 @@
             this.advancedPanelToolStripMenuItem.Name = "advancedPanelToolStripMenuItem";
             this.advancedPanelToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.advancedPanelToolStripMenuItem.Text = "Advanced Panel";
-            this.advancedPanelToolStripMenuItem.Click += new System.EventHandler(this.advancedPanelToolStripMenuItem_Click);
+            this.advancedPanelToolStripMenuItem.Click += new System.EventHandler(this.AdvancedPanelToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -528,25 +538,14 @@
             this.usageToolStripMenuItem.Name = "usageToolStripMenuItem";
             this.usageToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.usageToolStripMenuItem.Text = "Usage";
-            this.usageToolStripMenuItem.Click += new System.EventHandler(this.usageToolStripMenuItem_Click);
+            this.usageToolStripMenuItem.Click += new System.EventHandler(this.UsageToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.aboutToolStripMenuItem.Text = "About";
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
-            // 
-            // txtUpdateSpeed
-            // 
-            this.txtUpdateSpeed.Location = new System.Drawing.Point(219, 591);
-            this.txtUpdateSpeed.Name = "txtUpdateSpeed";
-            this.txtUpdateSpeed.Size = new System.Drawing.Size(66, 20);
-            this.txtUpdateSpeed.TabIndex = 11;
-            this.txtUpdateSpeed.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtUpdateSpeed_KeyDown);
-            this.txtUpdateSpeed.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtUpdateSpeed_KeyPress);
-            this.txtUpdateSpeed.Leave += new System.EventHandler(this.txtUpdateSpeed_Leave);
-            this.txtUpdateSpeed.Validating += new System.ComponentModel.CancelEventHandler(this.txtUpdateSpeed_Validating);
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
             // 
             // Form1
             // 

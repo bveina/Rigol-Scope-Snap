@@ -29,7 +29,7 @@ namespace ScopeSnapSharp
 
 
         // databinding for available SCPI devices in a listbox
-        public BindingList<string> resourceList { get; set; }
+        public BindingList<string> ResourceList { get; set; }
         
         private int _ScreenUpdate_mS;
         public int ScreenUpdateRate
@@ -65,7 +65,7 @@ namespace ScopeSnapSharp
             }
         }
 
-        private Dictionary<string, string> QuickList = new Dictionary<string, string>() {
+        private readonly Dictionary<string, string> QuickList = new Dictionary<string, string>() {
             {"Menu Off","moff"},
             {"Measure" ,"MEASure"},
             { "Acquire","ACQuire" },
@@ -89,7 +89,7 @@ namespace ScopeSnapSharp
             { "BACK","BACK"}
         };
 
-        public bool getInvertStatus()
+        public bool GetInvertStatus()
         {
             if (invertCommands[0] == "") return false;
             if (invertCommands[2] == "") return false;
@@ -105,7 +105,7 @@ namespace ScopeSnapSharp
             }
         }
 
-        public void setInvert(bool inverted)
+        public void SetInvert(bool inverted)
         {
             if (invertCommands[1] == "") return ;
             if (invertCommands[2] == "") return ;
@@ -119,7 +119,7 @@ namespace ScopeSnapSharp
             }
         }
 
-        public bool getGrayscaleStatus()
+        public bool GetGrayscaleStatus()
         {
             if (turnGrayscaleCommands[0] == "") return false;
             if (turnGrayscaleCommands[2] == "") return false;
@@ -134,7 +134,7 @@ namespace ScopeSnapSharp
                     return false;
             }
         }
-        public void setGrayscale(bool gray)
+        public void SetGrayscale(bool gray)
         {
             if (turnGrayscaleCommands[1] == "") return;
             if (turnGrayscaleCommands[2] == "") return;
@@ -167,10 +167,12 @@ namespace ScopeSnapSharp
         public Form1()
         {
             InitializeComponent();
-            validateUpdateTime("2000", out _ScreenUpdate_mS);
-            t = new Timer();
-            t.Interval = ScreenUpdateRate;
-            t.Tick += T_Tick;
+            ValidateUpdateTime("2000", out _ScreenUpdate_mS);
+            t = new Timer()
+            {
+                Interval = ScreenUpdateRate
+            };
+            t.Tick += TimerT_Tick;
             SetupControlState(false);
             FailCount = 0;
 
@@ -182,8 +184,8 @@ namespace ScopeSnapSharp
             ImageGrabber.WorkerReportsProgress = true;
 
             // setup data bindind for the Instrument Listbox
-            this.resourceList = new BindingList<string>();
-            this.listBox1.DataSource = resourceList;
+            this.ResourceList = new BindingList<string>();
+            this.listBox1.DataSource = ResourceList;
 
             Binding updateBnd = new Binding("Text", this, "ScreenUpdateRate", true);
             updateBnd.BindingComplete += Form1_BindingComplete;
@@ -198,8 +200,7 @@ namespace ScopeSnapSharp
 
         private void Form1_Parse(object sender, ConvertEventArgs e)
         {
-            int tmp;
-            if (int.TryParse((string)e.Value,out tmp))
+            if (int.TryParse((string)e.Value,out int tmp))
             {
                 e.Value = tmp;
             }
@@ -223,11 +224,14 @@ namespace ScopeSnapSharp
                 int i = 0;
                 foreach (KeyValuePair<string, string> pair in QuickList)
                 {
-                    Button b = new Button();
-                    b.Text = pair.Key;
-                    b.Click += cmdSendButtonPress_click;
-                    b.Dock = DockStyle.Fill;
-                    b.Tag = pair.Value;
+                    Button b = new Button
+                    {
+                        Text = pair.Key,
+                        Dock = DockStyle.Fill,
+                        Tag = pair.Value
+                    };
+                    b.Click += CmdSendButtonPress_click;
+
                     tblLayoutButtons.RowStyles.Add(new RowStyle(SizeType.Percent, 100 / QuickList.Count));
                     tblLayoutButtons.Controls.Add(b, 0, i);
                     i++;
@@ -241,7 +245,7 @@ namespace ScopeSnapSharp
                 if (Settings.Default.LastConnectionSuccessful)
                 {
                     this.Live = true;
-                    this.beginSearchConnections();
+                    this.BeginSearchConnections();
                 }
                // txtScreenUpdateRate.
                //this.DataBindings.Add("ScreenUpdateTime",txtScreenUpdateRate,"text",)
@@ -253,7 +257,7 @@ namespace ScopeSnapSharp
         }
 
         //start background worker to get image (if not already in progress
-        private void updateScreen(PictureBox pb)
+        private void UpdateScreen(PictureBox pb)
         {
             toolStripProgressBar1.Style = ProgressBarStyle.Marquee;
             if (this.imgGrabFunction ==null)
@@ -348,7 +352,7 @@ namespace ScopeSnapSharp
         private void ImageGrabber_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             toolStripProgressBar1.Value = e.ProgressPercentage;
-            setMessage(e.UserState as string);
+            SetMessage(e.UserState as string);
         }
 
         private void ImageGrabber_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -366,7 +370,7 @@ namespace ScopeSnapSharp
                     {
                         mbSession.Dispose();
                     }
-                    setMessage("Disconnected!");
+                    SetMessage("Disconnected!");
                     MessageBox.Show("There was a problem while grabbbing an image, please reconnect to the Scope");
                 }
                 return;
@@ -379,14 +383,14 @@ namespace ScopeSnapSharp
             }
             pb.Image = model;
             FailCount = 0;
-            setMessage("Connected to " + textBox1.Text);
+            SetMessage("Connected to " + textBox1.Text);
             
         }
         #endregion
 
 
         // starts a background worker
-        private void beginSearchConnections()
+        private void BeginSearchConnections()
         {
             if (listBox1.Items.Contains(textBox1.Text))
             {
@@ -396,7 +400,7 @@ namespace ScopeSnapSharp
 
             textBox1.ReadOnly = true;
             Cursor.Current = Cursors.WaitCursor;
-            setMessage("Finding Instruments");
+            SetMessage("Finding Instruments");
 
             BackgroundWorker find = new BackgroundWorker();
             find.WorkerReportsProgress = true;
@@ -413,7 +417,7 @@ namespace ScopeSnapSharp
         private void Find_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             toolStripProgressBar1.Value = e.ProgressPercentage;
-            setMessage(e.UserState as string);
+            SetMessage(e.UserState as string);
         }
 
 
@@ -421,39 +425,39 @@ namespace ScopeSnapSharp
         {
             toolStripProgressBar1.Value = 0;
             toolStripProgressBar1.Style = ProgressBarStyle.Continuous;
-            resourceList.Clear();
-            resourceList.RaiseListChangedEvents = true;
+            ResourceList.Clear();
+            ResourceList.RaiseListChangedEvents = true;
             if (e.Result == null)
             {
-                setMessage("could not find any instruments, check connections and try again.");
+                SetMessage("could not find any instruments, check connections and try again.");
                 return;
             }
             foreach (string s in (e.Result as List<string>))
             {
-                resourceList.Add(s);
+                ResourceList.Add(s);
 
             }
 
 
-            if (resourceList.Count == 1)
+            if (ResourceList.Count == 1)
             {
                 listBox1.SelectedIndex = 0;
-                textBox1.Text = (string)resourceList[0];
-                setMessage("One Instrument Found.");
-                connect((string)resourceList[0]);
+                textBox1.Text = (string)ResourceList[0];
+                SetMessage("One Instrument Found.");
+                Connect((string)ResourceList[0]);
                 
-                updateScreen(pictureBox1);
+                UpdateScreen(pictureBox1);
             }
-            else if (resourceList.Count != 0)
+            else if (ResourceList.Count != 0)
             {
                 listBox1.SelectedIndex = 0;
-                textBox1.Text = (string)resourceList[0];
-                setMessage("Multiple Instruments Found, Please Select one and click connect.");
+                textBox1.Text = (string)ResourceList[0];
+                SetMessage("Multiple Instruments Found, Please Select one and click connect.");
                 //listBox1.SelectedIndex = 0;
             }
             else
             {
-                setMessage("No Instruments Found.");
+                SetMessage("No Instruments Found.");
             }
         }
 
@@ -490,7 +494,7 @@ namespace ScopeSnapSharp
         #endregion
 
 
-        private void T_Tick(object sender, EventArgs e)
+        private void TimerT_Tick(object sender, EventArgs e)
         {
             
             t.Enabled = false;
@@ -503,7 +507,7 @@ namespace ScopeSnapSharp
                     {
                         if (mbSession == null || mbSession.IsDisposed) return;
                         //starts up a background thread
-                        updateScreen(pictureBox1);
+                        UpdateScreen(pictureBox1);
                         //FailCount = 0;
                     }
                     catch (Exception ex)
@@ -514,7 +518,7 @@ namespace ScopeSnapSharp
                             MessageBox.Show(ex.Message);
                             SetupControlState(false);
                             mbSession.Dispose();
-                            setMessage("Disconnected");
+                            SetMessage("Disconnected");
                         }
                     }
                 }
@@ -531,7 +535,7 @@ namespace ScopeSnapSharp
         // this method is called by all side panel buttons on click. 
         // button tag must contain the string that should be sent
         // sends a simulated keypress to the scope
-        private void cmdSendButtonPress_click(object sender, EventArgs e)
+        private void CmdSendButtonPress_click(object sender, EventArgs e)
         {
             lock (mbSession)
             {
@@ -541,48 +545,48 @@ namespace ScopeSnapSharp
 
 
         // launch a background worker to find and populate instruments
-        private void btnSearch_Click(object sender, EventArgs e)
+        private void BtnSearch_Click(object sender, EventArgs e)
         {
             //SearchConnections();
-            beginSearchConnections();
+            BeginSearchConnections();
         }
 
 
         //todo, replace this with a data binding.
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void ListBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             textBox1.Text = (string)(sender as ListBox).SelectedItem;
         }
 
 
         // users can double click on the instrument text box to specify custom connection strings
-        private void textBox1_DoubleClick(object sender, EventArgs e)
+        private void TextBox1_DoubleClick(object sender, EventArgs e)
         {
             TextBox tb = (sender as TextBox);
             tb.ReadOnly = false;
         }
 
         // destroy the existing connection to the instrument and update the controls to show we are disconnected.
-        private void btnDisconnect_Click(object sender, EventArgs e)
+        private void BtnDisconnect_Click(object sender, EventArgs e)
         {
             lock (mbSession)
             {
                 SetupControlState(false);
                 mbSession.Dispose();
-                setMessage("Disconnected");
+                SetMessage("Disconnected");
             }
         }
-        private void btnConnect_Click(object sender, EventArgs e)
+        private void BtnConnect_Click(object sender, EventArgs e)
         {
-            connect(textBox1.Text);
+            Connect(textBox1.Text);
         }
 
-        private void btnGrab_Click(object sender, EventArgs e)
+        private void BtnGrab_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
             try
             {
-                updateScreen(pictureBox1);
+                UpdateScreen(pictureBox1);
             }
             catch (Exception exp)
             {
@@ -595,22 +599,21 @@ namespace ScopeSnapSharp
         }
 
 
-        private void pictureBox1_Click(object sender, EventArgs e)
+        private void PictureBox1_Click(object sender, EventArgs e)
         {
             if (!Connected)
             {
-                setMessage("You are not connected to any scope! (did you search AND connect?)");
+                SetMessage("You are not connected to any scope! (did you search AND connect?)");
                 return;
             }
             MouseEventArgs ee = e as MouseEventArgs;
 
             if (ee.Button == MouseButtons.Right)
             {
-                updateScreen(pictureBox1);
+                UpdateScreen(pictureBox1);
                 return;
             }
-            int myX, myY;
-            convertCoordinates(ee.X, ee.Y, out myX, out myY);
+            ConvertCoordinates(ee.X, ee.Y, out int myX, out int myY);
             if (myX < 0 || myY < 0) return;
             string txt2Send = string.Format(":SYSTem:TOUCh {0}, {1}", myX, myY);
             lock (mbSession)
@@ -626,45 +629,45 @@ namespace ScopeSnapSharp
                     MessageBox.Show("Scope Lost Contact", "Error Sending Touch Request");
                     SetupControlState(false);
                     mbSession.Dispose();
-                    setMessage("Disconnected");
+                    SetMessage("Disconnected");
                 }
                 catch (Exception exp)
                 {
                     MessageBox.Show(exp.Message, "Error Sending Touch Request");
                     SetupControlState(false);
                     mbSession.Dispose();
-                    setMessage("Disconnected");
+                    SetMessage("Disconnected");
                 }
             }
         }
 
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        private void CheckBox1_CheckedChanged(object sender, EventArgs e)
         {
             this.Live = (sender as CheckBox).Checked;
         }
 
 
-        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SaveScreenShot();
         }
 
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
 
-        private void copyToolStripMenuItem1_Click(object sender, EventArgs e)
+        private void CopyToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             System.Windows.Forms.Clipboard.SetImage(model);
         }
 
-        private void newConnectionToolStripMenuItem_Click(object sender, EventArgs e)
+        private void NewConnectionToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            beginSearchConnections();
+            BeginSearchConnections();
         }
 
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string AppString = "Scope Snap Sharp";
             string versionString = Application.ProductVersion;
@@ -673,59 +676,58 @@ namespace ScopeSnapSharp
 
         }
 
-        private void invertToolStripMenuItem_Click(object sender, EventArgs e)
+        private void InvertToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            setInvert(invertToolStripMenuItem.Checked);
+            SetInvert(invertToolStripMenuItem.Checked);
         }
 
-        private void grayscaleToolStripMenuItem_Click(object sender, EventArgs e)
+        private void GrayscaleToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            setGrayscale(grayscaleToolStripMenuItem.Checked);
+            SetGrayscale(grayscaleToolStripMenuItem.Checked);
         }
 
-        private void showButtonsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ShowButtonsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             splitContainer2.SplitterDistance = 100;
             splitContainer2.Panel1Collapsed = !showButtonsToolStripMenuItem.Checked;
         }
 
-        private void pictureOptionsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void PictureOptionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
         }
         
 
-        private void btnSave_Click(object sender, EventArgs e)
+        private void BtnSave_Click(object sender, EventArgs e)
         {
             SaveScreenShot();
         }
 
-        private void liveToolStripMenuItem_Click(object sender, EventArgs e)
+        private void LiveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             bool selectedState = (sender as ToolStripMenuItem).Checked;
             this.Live = selectedState;
         }
 
-        private void showRightPanelToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ShowRightPanelToolStripMenuItem_Click(object sender, EventArgs e)
         {
             splitContainer1.Panel2Collapsed = !(sender as ToolStripMenuItem).Checked;
         }
-        private void pictureBox1_MouseHover(object sender, MouseEventArgs e)
+        private void PictureBox1_MouseHover(object sender, MouseEventArgs e)
         {
-            int myX, myY;
             try
             {
-                convertCoordinates(e.X, e.Y, out myX, out myY);
+                ConvertCoordinates(e.X, e.Y, out int myX, out int myY);
                 toolStripLblPosition.Text = String.Format("Position:({0}, {1})", myX, myY);
             }
-            catch (Exception ex)
+            catch (Exception )
             {
                 //ignore
             }
 
         }
 
-        private void advancedPanelToolStripMenuItem_Click(object sender, EventArgs e)
+        private void AdvancedPanelToolStripMenuItem_Click(object sender, EventArgs e)
         {
             tblLayoutAdvanced.Visible = advancedPanelToolStripMenuItem.Checked;
             if (advancedPanelToolStripMenuItem.Checked == true)
@@ -735,7 +737,7 @@ namespace ScopeSnapSharp
             }
         }
 
-        private void cmdQuerySCPI_Click(object sender, EventArgs e)
+        private void CmdQuerySCPI_Click(object sender, EventArgs e)
         {
             lock (mbSession)
             {
@@ -760,7 +762,7 @@ namespace ScopeSnapSharp
                 }
             }
         }
-        private void cmdSCPISend_Click(object sender, EventArgs e)
+        private void CmdSCPISend_Click(object sender, EventArgs e)
         {
             lock (mbSession)
             {
@@ -777,7 +779,7 @@ namespace ScopeSnapSharp
 
         }
 
-        private void usageToolStripMenuItem_Click(object sender, EventArgs e)
+        private void UsageToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process.Start("http://github.com/bveina/Rigol-Scope-Snap");
         }
@@ -785,7 +787,7 @@ namespace ScopeSnapSharp
 
 
         // sets a message string on the control bar.
-        private void setMessage(string s)
+        private void SetMessage(string s)
         {
             toolstripLabelMessage.Text = String.Format("Message: {0}", s);
         }
@@ -800,16 +802,16 @@ namespace ScopeSnapSharp
             if (state)
             {
                 btnConnect.Text = "Disconnect";
-                btnConnect.Click -= btnConnect_Click;
-                btnConnect.Click -= btnDisconnect_Click;
-                btnConnect.Click += btnDisconnect_Click;
+                btnConnect.Click -= BtnConnect_Click;
+                btnConnect.Click -= BtnDisconnect_Click;
+                btnConnect.Click += BtnDisconnect_Click;
             }
             else
             {
                 btnConnect.Text = "Connect";
-                btnConnect.Click -= btnConnect_Click;
-                btnConnect.Click -= btnDisconnect_Click;
-                btnConnect.Click += btnConnect_Click;
+                btnConnect.Click -= BtnConnect_Click;
+                btnConnect.Click -= BtnDisconnect_Click;
+                btnConnect.Click += BtnConnect_Click;
             }
 
             btnSearch.Enabled = !state;
@@ -843,26 +845,25 @@ namespace ScopeSnapSharp
 
         // runs on the main thread, dont call this from a background worker
         // connects to an instrument.
-        private void connect(string res)
+        private void Connect(string res)
         {
             if (res == "")
             {
-                setMessage("No Resouce Selected - Choose search, then select an item from the list");
+                SetMessage("No Resouce Selected - Choose search, then select an item from the list");
                 return;
             }
             Cursor.Current = Cursors.WaitCursor;
-            setMessage("Connecting to " + res);
+            SetMessage("Connecting to " + res);
 
             using (var rmSession = new ResourceManager())
             {
-                ResourceOpenStatus myStatus;
                 try
                 {
-                    mbSession = (MessageBasedSession)rmSession.Open(res, AccessModes.ExclusiveLock, 10, out myStatus);
+                    mbSession = (MessageBasedSession)rmSession.Open(res, AccessModes.ExclusiveLock, 10, out ResourceOpenStatus myStatus);
                     if (myStatus != ResourceOpenStatus.Success)
                     {
                         SetupControlState(false);
-                        setMessage("there was an error while trying to open that device.");
+                        SetMessage("there was an error while trying to open that device.");
                         return;
                     }
                     SetupControlState(true);
@@ -874,7 +875,7 @@ namespace ScopeSnapSharp
                     if (!UpdateQueryStrings(mbSession.RawIO.ReadString()))
                     {
                         // cant figure out how to use this scope, so leave everything disabled and be done.
-                        setMessage("Limited Connected to " + res);
+                        SetMessage("Limited Connected to " + res);
                         return;
                     }
 
@@ -883,18 +884,18 @@ namespace ScopeSnapSharp
                         //mbSession.RawIO.Write(":SAVE:IMAGE:INVERT ON");
                         mbSession.RawIO.Write(string.Format(invertCommands[1], invertCommands[2]));
                     }
-                    setMessage("Connected to " + res);
+                    SetMessage("Connected to " + res);
                     if (Settings.Default.LastConnectionSuccessful && this.Live)
                     {
                         t.Enabled = true; //force timer on incase it timed out while connecting.
                     }
-                    updateScreen(pictureBox1);
+                    UpdateScreen(pictureBox1);
                     Settings.Default.LastConnectionSuccessful = true;
 
                 }
                 catch (InvalidCastException)
                 {
-                    setMessage("Could not connect to " + res);
+                    SetMessage("Could not connect to " + res);
 
                 }
                 catch (Exception exp)
@@ -927,7 +928,7 @@ namespace ScopeSnapSharp
                 this.turnGrayscaleCommands = new string[] { ":STORage:IMAGE:COLOR?", ":STORage:IMAGE:COLOR {0}", "OFF", "ON" };
                 this.invertCommands = new string[] { ":STORage:IMAGE:INVERT?", ":STORage:IMAGE:INVERT {0}", "ON", "Off" };
                 this.getDataCommand = "DISP:DATA?";
-                this.imgGrabFunction = getImage;
+                this.imgGrabFunction = GetImage;
                 return true;
             }
             else if (find2.IsMatch(model))
@@ -935,7 +936,7 @@ namespace ScopeSnapSharp
                 this.turnGrayscaleCommands = new string[] { ":SAVE:IMAGE:COLOR?", ":SAVE:IMAGE:COLOR {0}", "GRAY", "COLor" };
                 this.invertCommands = new string[] { ":SAVE:IMAGE:INVERT?", ":SAVE:IMAGE:INVERT {0}", "1", "0" };
                 this.getDataCommand = "DISP:DATA?";
-                this.imgGrabFunction = getImage;
+                this.imgGrabFunction = GetImage;
                 return true;
             }
             else if (find3.IsMatch(model))
@@ -943,7 +944,7 @@ namespace ScopeSnapSharp
                 this.turnGrayscaleCommands = new string[] { "", "", "", "" };
                 this.invertCommands = new string[] { "", "", "", "" };
                 this.getDataCommand = "HARDCOPY START";
-                this.imgGrabFunction = getJFIFImage;
+                this.imgGrabFunction = GetJFIFImage;
                 return true;
             }
             else
@@ -974,7 +975,7 @@ namespace ScopeSnapSharp
 
         // excpects that it already has a lock on mbSession.
         // can be run from a background thread.
-        private byte[] getJFIFImage()
+        private byte[] GetJFIFImage()
         {
             //string getDataCmd = "DISP:DATA?"; // mso5000
             //string getDataCmd = "DISP:DATA? ON,ON,BMP"; //DS1054Z
@@ -986,11 +987,12 @@ namespace ScopeSnapSharp
             string textToWrite = ReplaceCommonEscapeSequences(getDataCmd);
             mbSession.RawIO.Write(textToWrite);
             List<byte> results = new List<byte>();
-            byte[] packet = new byte[8192];
+            //byte[] packet = new byte[8192];
+            byte[] packet;
             ReadStatus rS;
             do
             {
-                packet = mbSession.RawIO.Read(8192, out rS);
+                packet = mbSession.RawIO.Read(32768, out rS);
                 results.AddRange(packet);
             } while (rS != ReadStatus.EndReceived);
             return results.ToArray();
@@ -998,8 +1000,9 @@ namespace ScopeSnapSharp
 
         // retrieve an image from the instrument. can be run from a background thread.
         // excpects that it already has a lock on mbSession.
-        private byte[] getImage()
+        private byte[] GetImage()
         {
+            //todo: could this be solved by querying ReadStatus similar to how getJFIF workes?
             //string getDataCmd = "DISP:DATA?"; // mso5000
             //string getDataCmd = "DISP:DATA? ON,ON,BMP"; //DS1054Z
             string getDataCmd = this.getDataCommand;
@@ -1016,9 +1019,8 @@ namespace ScopeSnapSharp
             }
             int tmcHeaderSize = tmcSize[1] - '0';
             byte[] packetSizeString = mbSession.RawIO.Read(tmcHeaderSize);
-            
-            int packetSize;
-            if (!int.TryParse(System.Text.Encoding.ASCII.GetString(packetSizeString), out packetSize))
+
+            if (!int.TryParse(System.Text.Encoding.ASCII.GetString(packetSizeString), out int packetSize))
             {
                 throw new ArgumentException("Error while parsing packet size: {0}", System.Text.Encoding.ASCII.GetString(packetSizeString));
             }
@@ -1027,7 +1029,7 @@ namespace ScopeSnapSharp
 
             long blocksize = (long)Math.Pow(2, 17);
             long totalRead = 0;
-            long currentRead = 0;
+            long currentRead;
             Ivi.Visa.ReadStatus stat;
             while (totalRead < packetSize)
             {
@@ -1042,7 +1044,7 @@ namespace ScopeSnapSharp
 
 
         // 2d XY scaling of coordinates.
-        private void convertCoordinates(int ClickX, int ClickY, out int imageX, out int imageY)
+        private void ConvertCoordinates(int ClickX, int ClickY, out int imageX, out int imageY)
         {
             imageX = -1;
             imageY = -1;
@@ -1114,11 +1116,13 @@ namespace ScopeSnapSharp
             // save the memory stream that is showing before you use the save dialog box.
             // this way, if live mode is enabled you save the image that existed when you hit save.
             byte[] tmpPacket = new byte[lastPacket.Length];
-            Array.Copy(lastPacket, tmpPacket,lastPacket.Length);
-            
+            Array.Copy(lastPacket, tmpPacket, lastPacket.Length);
+
             // ask where to save
-            SaveFileDialog sf = new SaveFileDialog();
-            sf.Filter = "Bitmap (*.bmp)|*.bmp|All Files (*.*)|*.*";
+            SaveFileDialog sf = new SaveFileDialog()
+            {
+               Filter = "Bitmap (*.bmp)|*.bmp|All Files (*.*)|*.*"
+            };
             DialogResult d = sf.ShowDialog();
 
             if (d != DialogResult.OK) return;
@@ -1138,13 +1142,13 @@ namespace ScopeSnapSharp
         {
             if (e.KeyCode==Keys.C && e.Modifiers == Keys.Control)
             {
-                if (isTextSelected()) return; 
+                if (IsTextSelected()) return; 
                 System.Windows.Forms.Clipboard.SetImage(model);
                 e.Handled = true;
             }
         }
 
-        private bool isTextSelected()
+        private bool IsTextSelected()
         {
             if (txtSCPIcmd.SelectionLength != 0) return true;
             if (txtSCPIresponse.SelectionLength != 0) return true;
@@ -1152,17 +1156,16 @@ namespace ScopeSnapSharp
             return false;
         }
 
-        private void txtSCPIresponse_Leave(object sender, EventArgs e)
+        private void TxtSCPIresponse_Leave(object sender, EventArgs e)
         {
             txtSCPIresponse.SelectionLength = 0;
         }
 
         
 
-        private bool validateUpdateTime(string input,out int val)
+        private bool ValidateUpdateTime(string input,out int val)
         {
-            int tmp;
-            bool valid = int.TryParse(input, out tmp);
+            bool valid = int.TryParse(input, out int tmp);
             val = tmp;
             this.ScreenUpdateRate = val;
             if (valid)
@@ -1173,21 +1176,15 @@ namespace ScopeSnapSharp
             return valid;
         }
 
-        private void txtUpdateSpeed_Validating(object sender, CancelEventArgs e)
+        private void TxtUpdateSpeed_Validating(object sender, CancelEventArgs e)
         {
             System.Console.WriteLine("Validating");
-            int tmp;
-            e.Cancel = !validateUpdateTime(txtUpdateSpeed.Text, out tmp);
-            
-                
+            e.Cancel = !ValidateUpdateTime(txtUpdateSpeed.Text, out int tmp);
+
+
         }
 
-        private void txtUpdateSpeed_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            
-        }
-
-        private void txtUpdateSpeed_KeyDown(object sender, KeyEventArgs e)
+        private void TxtUpdateSpeed_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
@@ -1196,7 +1193,7 @@ namespace ScopeSnapSharp
             }
         }
 
-        private void txtUpdateSpeed_Leave(object sender, EventArgs e)
+        private void TxtUpdateSpeed_Leave(object sender, EventArgs e)
         {
             System.Console.WriteLine("Leaving");
         }

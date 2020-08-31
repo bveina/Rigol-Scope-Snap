@@ -5,5 +5,8 @@
     <Setting Name="LastConnectionSuccessful" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="PacketSize" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">32768</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
