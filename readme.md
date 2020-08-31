@@ -83,6 +83,11 @@ Live mode will refresh the screen image roughly once a second. It can be toggled
 * The Live Checkbox in the lower Right.
 * The _Options->Live_ menu item.
 
+As of Version 1.5 there is now an option to adjust the refresh rate. This will be a matter of personal preference to most users. the software defaults to 2000mS at startup.
+
+- For a computer-only interface 1000mS is nice, but can caused miss button presses.
+- If using the scope touchscreen while in live mode, using 2000 mS or greater.
+
 ## SCPI interface
 ![SCPI Command Box](/images/SCPICommands.PNG)
 Advanced Users may wish to send raw SCPI commands or queries to the scope. users may issue multiple commands at once by placing sequential commands on multiple lines then selecting "Write". to get the banner image (AM modulation with color-grading) try pasting the code below into the SCPI command box.
