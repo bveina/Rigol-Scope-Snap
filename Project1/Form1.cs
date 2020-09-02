@@ -1207,8 +1207,9 @@ namespace ScopeSnapSharp
         {
             if (e.KeyCode == Keys.Enter)
             {
-                checkBox1.Focus();
-                //this.ActiveControl = null;
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+                checkBox1.Focus();                
             }
         }
 
