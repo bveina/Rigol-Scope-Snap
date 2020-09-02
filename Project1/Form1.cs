@@ -1197,7 +1197,7 @@ namespace ScopeSnapSharp
 
         private void TxtUpdateSpeed_Validating(object sender, CancelEventArgs e)
         {
-            System.Console.WriteLine("Validating");
+            //System.Console.WriteLine("Validating");
             e.Cancel = !ValidateUpdateTime(txtUpdateSpeed.Text, out int tmp);
 
 
@@ -1207,7 +1207,6 @@ namespace ScopeSnapSharp
         {
             if (e.KeyCode == Keys.Enter)
             {
-                e.Handled = true;
                 e.SuppressKeyPress = true;
                 checkBox1.Focus();                
             }
@@ -1215,7 +1214,7 @@ namespace ScopeSnapSharp
 
         private void TxtUpdateSpeed_Leave(object sender, EventArgs e)
         {
-            System.Console.WriteLine("Leaving");
+            //System.Console.WriteLine("Leaving");
         }
     }
 }
