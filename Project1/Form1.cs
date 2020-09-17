@@ -12,6 +12,7 @@ using System.Windows.Forms;
 
 using System.Text.RegularExpressions;
 using Ivi.Visa;
+using System.Runtime.CompilerServices;
 
 namespace ScopeSnapSharp
 {
@@ -318,7 +319,8 @@ namespace ScopeSnapSharp
                 }
                 catch (Exception exp)
                 {
-                    MessageBox.Show(exp.Message, exp.Message);
+                    (sender as BackgroundWorker).ReportProgress(100, exp.Message);
+                    //MessageBox.Show(exp.Message, exp.Message);
                     e.Result = null;
                     return;
 
@@ -941,6 +943,7 @@ namespace ScopeSnapSharp
                 Regex find1 = new System.Text.RegularExpressions.Regex("DS1[0-9][0-9][0-9][ZB]");
                 Regex find2 = new System.Text.RegularExpressions.Regex("MSO5[0-9][0-9][0-9]");
                 Regex find3 = new System.Text.RegularExpressions.Regex("TBS2[0-9][0-9][0-9]");
+                Regex find4 = new System.Text.RegularExpressions.Regex("DS1[0-9][0-9][0-9][E]");
 
             if (find1.IsMatch(model))
             {
@@ -966,6 +969,15 @@ namespace ScopeSnapSharp
                 this.imgGrabFunction = GetJFIFImage;
                 return true;
             }
+            else if (find4.IsMatch(model))
+            {
+                this.turnGrayscaleCommands = new string[] { "", "", "", "" };
+                this.invertCommands = new string[] { "", "", "", "" };
+                this.getDataCommand = ":LCD:DATA?";
+                this.imgGrabFunction = GetRawColorImage;
+                return true;
+            }
+
             else
             {
                 MessageBox.Show("This Device is not currently supported but you can use SCPI commands.");
@@ -991,6 +1003,77 @@ namespace ScopeSnapSharp
         }
 
 
+
+        private byte[] GetRawColorImage()
+        {
+            // dont be fooled byt the loop. on the Rigol 1102E, if you dont get everything all at once it all breaks.
+            // make sure that the packet size is larger than the image.
+            // also, you cant rely on the TMC header, because you need to get everything in one shot.
+            string getDataCmd = this.getDataCommand;
+            string textToWrite = ReplaceCommonEscapeSequences(getDataCmd);
+            mbSession.RawIO.Write(textToWrite);
+
+            List<byte> results = new List<byte>();
+            byte[] packet;
+            ReadStatus rS;
+            do
+            {
+                packet = mbSession.RawIO.Read((long)Math.Pow(2,17), out rS);
+                results.AddRange(packet);
+            } while (rS != ReadStatus.EndReceived);
+            return convertRigol8bpp(results);
+        }
+
+        private byte[] convertRigol8bpp(List<byte> data)
+        {
+            int height = 234;
+            int width = 320;
+            int skip = 10;
+            Bitmap image = new Bitmap(320, 234, PixelFormat.Format32bppArgb);
+
+            BitmapData bmpData = image.LockBits(new Rectangle(0, 0, width, height), System.Drawing.Imaging.ImageLockMode.WriteOnly, image.PixelFormat);
+            int stride = bmpData.Stride;
+            unsafe
+            {
+                int* row = (int*)bmpData.Scan0;
+                
+                for (int i=0;i<width*height;i++)
+                    row[i] = convert8bppTo32bpp(data[i + skip]);
+              
+            }
+            image.UnlockBits(bmpData);
+            return ImageToByte2(image);
+        }
+
+        public int convert8bppTo32bpp(byte x)
+        {
+            // warning: these variable names give the correct colors in the end but i was swappning things around so often because of the undocumented bit patter of the data, 
+            // there may be an instance where i swaped things twice, and that results in the correct things.
+            // you have been warned, red may not actually be red, but it puts it into the correct byte posision.
+            // RR GGG BBB --> 0000 0000 RR00 0000 GGG0 0000 BBB0 0000
+            const int redBits = 2;
+            const int greenBits = 3;
+            const int blueBits = 3;
+            const int redPos = 8-redBits;
+            const int bluePos = 0;
+            const int greenPos = blueBits;
+
+
+            int r = (x >> redPos) & ((1 << redBits) - 1);
+            int b = (x >> bluePos) & ((1 << blueBits) - 1);
+            int g = (x >> greenPos) & ((1 << greenBits) - 1);
+            int tmp = ((r << (8 - redBits)) << 16) | ((g << (8 - greenBits)) << 8) | ((b << (8 - blueBits)) << 0);
+            return tmp;
+        }
+
+        public static byte[] ImageToByte2(Image img)
+        {
+            using (var stream = new MemoryStream())
+            {
+                img.Save(stream, System.Drawing.Imaging.ImageFormat.Bmp);
+                return stream.ToArray();
+            }
+        }
 
         // excpects that it already has a lock on mbSession.
         // can be run from a background thread.
@@ -1041,12 +1124,12 @@ namespace ScopeSnapSharp
 
             if (!int.TryParse(System.Text.Encoding.ASCII.GetString(packetSizeString), out int packetSize))
             {
-                throw new ArgumentException("Error while parsing packet size: {0}", System.Text.Encoding.ASCII.GetString(packetSizeString));
+                throw new ArgumentException(string.Format("Error while parsing packet size: {0}", System.Text.Encoding.ASCII.GetString(packetSizeString)));
             }
             //int packetSize = int.Parse(System.Text.Encoding.ASCII.GetString(packetSizeString));
             byte[] packet = new byte[packetSize];
 
-            long blocksize = (long)Math.Pow(2, 17);
+            long blocksize = (long)Math.Pow(2, 16);
             long totalRead = 0;
             long currentRead;
             Ivi.Visa.ReadStatus stat;
@@ -1216,5 +1299,6 @@ namespace ScopeSnapSharp
         {
             //System.Console.WriteLine("Leaving");
         }
+
     }
 }
