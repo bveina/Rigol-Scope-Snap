@@ -90,6 +90,7 @@ namespace ScopeSnapSharp
             { "BACK","BACK"}
         };
 
+
         public bool GetInvertStatus()
         {
             if (invertCommands[0] == "") return false;
@@ -944,6 +945,7 @@ namespace ScopeSnapSharp
                 Regex find2 = new System.Text.RegularExpressions.Regex("MSO5[0-9][0-9][0-9]");
                 Regex find3 = new System.Text.RegularExpressions.Regex("TBS2[0-9][0-9][0-9]");
                 Regex find4 = new System.Text.RegularExpressions.Regex("DS1[0-9][0-9][0-9][E]");
+                Regex find5 = new System.Text.RegularExpressions.Regex("DL3[A]?[0-9][0-9][0-9]");
 
             if (find1.IsMatch(model))
             {
@@ -977,7 +979,14 @@ namespace ScopeSnapSharp
                 this.imgGrabFunction = GetRawColorImage;
                 return true;
             }
-
+            else if (find5.IsMatch(model))
+            {
+                this.turnGrayscaleCommands = new string[] { "", "", "", "" };
+                this.invertCommands = new string[] { "", "", "", "" };
+                this.getDataCommand = "PROJ:WND:DATA?";
+                this.imgGrabFunction = GetImage;
+                return true;
+            }
             else
             {
                 MessageBox.Show("This Device is not currently supported but you can use SCPI commands.");
