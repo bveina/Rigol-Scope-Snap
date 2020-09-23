@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<InstrumentList
+ xmlns="http://tempuri.org/SCPI-instrument-definition.xsd"
+   xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  >
+  <Instruments DisplayName="Rigol MSO5000" >
+    <RegularExpressionString>MSO5[0-9][0-9][0-9]</RegularExpressionString>
+    <Invert>
+      <Query>:SAVE:IMAGE:INVERT?</Query>
+      <OnCommand>:SAVE:IMAGE:INVERT 1</OnCommand>
+      <OffCommand>:SAVE:IMAGE:INVERT 0</OffCommand>
+      <OnCompare>1</OnCompare>
+      <OffCompare>0</OffCompare>
+    </Invert>
+    <Grayscale>
+      <Query>:SAVE:IMAGE:COLOR?</Query>
+      <OnCommand>:SAVE:IMAGE:COLOR GRAY</OnCommand>
+      <OffCommand>:SAVE:IMAGE:COLOR COLor</OffCommand>
+      <OnCompare>GRAY</OnCompare>
+      <OffCompare>COLor</OffCompare>
+    </Grayscale>
+    <Buttons>
+      <Button Display="Menu Off" Command=":SYST:KEY:PRESS moff"/>
+      <Button Display="Measure" Command=":SYST:KEY:PRESS MEASure"/>
+      <Button Display="Acquire" Command=":SYST:KEY:PRESS ACQuire"/>
+      <Button Display="Storage" Command=":SYST:KEY:PRESS STORage"/>
+      <Button Display="Cursor" Command=":SYST:KEY:PRESS CURSor"/>
+      <Button Display="Display" Command=":SYST:KEY:PRESS DISPlay"/>
+      <Button Display="Utility" Command=":SYST:KEY:PRESS UTILity"/>
+      <Button Display="LA" Command=":SYST:KEY:PRESS LA"/>
+      <Button Display="Ref" Command=":SYST:KEY:PRESS REF"/>
+      <Button Display="Math" Command=":SYST:KEY:PRESS MATH"/>
+      <Button Display="Decode" Command=":SYST:KEY:PRESS DECode"/>
+      <Button Display="Trigger" Command=":SYST:KEY:PRESS TMENu"/>
+      <Button Display="G I" Command=":SYST:KEY:PRESS GENerator1"/>
+      <Button Display="G II" Command=":SYST:KEY:PRESS GENerator2"/>
+      <Button Display="Search" Command=":SYST:KEY:PRESS SEARch"/>
+      <Button Display="Zoom" Command=":SYST:KEY:PRESS ZOOM"/>
+      <Button Display="Quick" Command=":SYST:KEY:PRESS QUICk"/>
+      <Button Display="Auto" Command=":SYST:KEY:PRESS AUTO"/>
+      <Button Display="Default" Command=":SYST:KEY:PRESS DEFault"/>
+      <Button Display="Clear" Command=":SYST:KEY:PRESS CLEar"/>
+      <Button Display="Back" Command=":SYST:KEY:PRESS BACK"/>
+    </Buttons>
+    <GetImageCmd>DISP:DATA?</GetImageCmd>
+    <ProcessImageMethod>GetImage</ProcessImageMethod>
+    <Touch HasTouch="true" TouchCommand=":SYSTem:TOUCh {0}, {1}"/>
+  </Instruments>
+  <Instruments DisplayName="Rigol DS1000Z">
+    <RegularExpressionString>DS1[0-9][0-9][0-9][ZB]</RegularExpressionString>
+    <Invert>
+      <Query>:STORAGE:IMAGE:INVERT?</Query>
+      <OnCommand>:STORAGE:IMAGE:INVERT ON</OnCommand>
+      <OffCommand>:STORAGE:IMAGE:INVERT OFF</OffCommand>
+      <OnCompare>ON</OnCompare>
+      <OffCompare>OFF</OffCompare>
+    </Invert>
+    <Grayscale>
+      <Query>:STORAGE:IMAGE:COLOR?</Query>
+      <OnCommand>:STORAGE:IMAGE:COLOR ON</OnCommand>
+      <OffCommand>:STORAGE:IMAGE:COLOR OFF</OffCommand>
+      <OnCompare>ON</OnCompare>
+      <OffCompare>OFF</OffCompare>
+    </Grayscale>
+    <Buttons>
+      <Button Display="Menu Off" Command=":SYST:KEY:PRESS moff"/>
+      <Button Display="Measure" Command=":SYST:KEY:PRESS MEASure"/>
+      <Button Display="Acquire" Command=":SYST:KEY:PRESS ACQuire"/>
+      <Button Display="Storage" Command=":SYST:KEY:PRESS STORage"/>
+      <Button Display="Cursor" Command=":SYST:KEY:PRESS CURSor"/>
+      <Button Display="Display" Command=":SYST:KEY:PRESS DISPlay"/>
+      <Button Display="Utility" Command=":SYST:KEY:PRESS UTILity"/>
+      <Button Display="LA" Command=":SYST:KEY:PRESS LA"/>
+      <Button Display="Ref" Command=":SYST:KEY:PRESS REF"/>
+      <Button Display="Math" Command=":SYST:KEY:PRESS MATH"/>
+      <Button Display="Decode" Command=":SYST:KEY:PRESS DECode"/>
+      <Button Display="Trigger" Command=":SYST:KEY:PRESS TMENu"/>
+      <Button Display="G I" Command=":SYST:KEY:PRESS GENerator1"/>
+      <Button Display="G II" Command=":SYST:KEY:PRESS GENerator2"/>
+      <Button Display="Search" Command=":SYST:KEY:PRESS SEARch"/>
+      <Button Display="Zoom" Command=":SYST:KEY:PRESS ZOOM"/>
+      <Button Display="Quick" Command=":SYST:KEY:PRESS QUICk"/>
+      <Button Display="Auto" Command=":SYST:KEY:PRESS AUTO"/>
+      <Button Display="Default" Command=":SYST:KEY:PRESS DEFault"/>
+      <Button Display="Clear" Command=":SYST:KEY:PRESS CLEar"/>
+      <Button Display="Back" Command=":SYST:KEY:PRESS BACK"/>
+    </Buttons>
+    <GetImageCmd>DISP:DATA?</GetImageCmd>
+    <ProcessImageMethod>GetImage</ProcessImageMethod>
+    
+    <Touch HasTouch="false"/>
+
+
+  </Instruments>
+  <Instruments DisplayName="Rigol DS1000E">
+    <RegularExpressionString>DS1[0-9][0-9][0-9][E]</RegularExpressionString>
+    <GetImageCmd>:LCD:DATA?</GetImageCmd>
+    <ProcessImageMethod>GetRaw8bpp</ProcessImageMethod>
+    <Touch HasTouch="false"/>
+  </Instruments>
+  <Instruments DisplayName="Rigol DL3000">
+    <RegularExpressionString>DL3[A]?[0-9][0-9][0-9]</RegularExpressionString>
+    <GetImageCmd>PROJ:WND:DATA?</GetImageCmd>
+    <ProcessImageMethod>GetImage</ProcessImageMethod>
+    <Touch HasTouch="false"/>
+  </Instruments>
+  <Instruments DisplayName="Tektronics TBS2000">
+    <RegularExpressionString>TBS2[0-9][0-9][0-9]</RegularExpressionString>
+    <GetImageCmd>HARDCOPY START</GetImageCmd>
+    <ProcessImageMethod>GetJFIF</ProcessImageMethod>
+    <Touch HasTouch="false"/>
+  </Instruments>
+  
+</InstrumentList>

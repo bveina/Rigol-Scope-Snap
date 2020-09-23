@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="SCPI-instrument-definition"
+    targetNamespace="http://tempuri.org/SCPI-instrument-definition.xsd"
+    elementFormDefault="qualified"
+    xmlns="http://tempuri.org/SCPI-instrument-definition.xsd"
+    xmlns:mstns="http://tempuri.org/SCPI-instrument-definition.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+  <xs:element name="InstrumentList">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Instruments" type="Instrument" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:complexType name="Instrument">
+    <xs:sequence>
+      <xs:element name="RegularExpressionString" type="xs:string"/>
+      <xs:element name="Invert" type ="RWattribute" minOccurs="0"/>
+      <xs:element name="Grayscale" type="RWattribute" minOccurs="0"/>
+      <xs:element name="Buttons" type="ButtonList" minOccurs="0"/>
+      <xs:element name="GetImageCmd" type="xs:string"/>
+      <xs:element name="ProcessImageMethod" type="ImageProcessor"/>
+      <xs:element name="Touch" type="TouchUnit"/>
+    </xs:sequence>
+    <xs:attribute name="DisplayName" type="xs:string"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="TouchUnit">
+    <xs:attribute name="HasTouch" type="xs:boolean" use ="required"/>
+    <xs:attribute name="TouchCommand" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:simpleType name="ImageProcessor">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="GetImage"/>
+      <xs:enumeration value="GetJFIF"/>
+      <xs:enumeration value="GetRaw8bpp"/>
+      <xs:enumeration value="GetRaw1bpp"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:complexType name="RWattribute">
+    <xs:sequence>
+      <xs:element name ="Query" type="xs:string"/>
+      <xs:element name ="OnCommand" type="xs:string"/>
+      <xs:element name ="OffCommand" type="xs:string"/>
+      <xs:element name ="OnCompare" type="xs:string"/>
+      <xs:element name ="OffCompare" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ButtonList">
+    <xs:sequence>
+      <xs:element name ="Button" type="ButtonDefinition" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+
+  <xs:complexType name="ButtonDefinition">
+    <xs:attribute name="Display" type="xs:string"/>
+    <xs:attribute name="Command" type="xs:string"/>
+  </xs:complexType>
+
+ 
+  
+  
+</xs:schema>
