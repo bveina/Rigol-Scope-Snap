@@ -222,4 +222,7 @@ if $(PlatformName)==x64 if $(ConfigurationName)==Release ( echo Deploy ) else ( 
 if $(PlatformName)==x64 if $(ConfigurationName)==Release (copy "$(TargetPath)" "$(TargetDir)$(ProjectName)@(VersionNumber)$(TargetExt)")
 </PostBuildEvent>
   </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>"C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\x64\xsd.exe" $(ProjectDir)SCPI-instrument-definition.xsd /classes</PreBuildEvent>
+  </PropertyGroup>
 </Project>
