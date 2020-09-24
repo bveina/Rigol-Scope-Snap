@@ -20,6 +20,7 @@ namespace ScopeSnapSharp
 {
     public partial class Form1 : Form
     {
+        private Button[] quickButtonList;
         private MessageBasedSession mbSession;
         private Timer t;
         private byte[] lastPacket;
@@ -216,11 +217,13 @@ namespace ScopeSnapSharp
         {
             try
             {
+                // generate the button List Dynamically
                 tblLayoutButtons.SuspendLayout();
                 tblLayoutButtons.ColumnCount = 1;
                 tblLayoutButtons.RowCount = QuickList.Count;
                 tblLayoutButtons.RowStyles.Clear();
                 int i = 0;
+                quickButtonList = new Button[QuickList.Count];
                 foreach (KeyValuePair<string, string> pair in QuickList)
                 {
                     Button b = new Button
@@ -230,7 +233,7 @@ namespace ScopeSnapSharp
                         Tag = pair.Value
                     };
                     b.Click += CmdSendButtonPress_click;
-
+                    quickButtonList[i] = b;
                     tblLayoutButtons.RowStyles.Add(new RowStyle(SizeType.Percent, 100 / QuickList.Count));
                     tblLayoutButtons.Controls.Add(b, 0, i);
                     i++;
@@ -241,11 +244,7 @@ namespace ScopeSnapSharp
                 splitContainer2.Panel1Collapsed = true;
                 tblLayoutAdvanced.Visible = advancedPanelToolStripMenuItem.Checked;
 
-                if (Settings.Default.LastConnectionSuccessful)
-                {
-                    this.Live = true;
-                    this.BeginSearchConnections();
-                }
+                
                // txtScreenUpdateRate.
                //this.DataBindings.Add("ScreenUpdateTime",txtScreenUpdateRate,"text",)
             }
@@ -253,6 +252,20 @@ namespace ScopeSnapSharp
             {
                 MessageBox.Show(ex.Message);
             }
+
+            try
+            {
+                if (Settings.Default.LastConnectionSuccessful)
+                {
+                    this.Live = true;
+                    this.BeginSearchConnections();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
         }
 
         //start background worker to get image (if not already in progress
@@ -558,7 +571,7 @@ namespace ScopeSnapSharp
         {
             lock (mbSession)
             {
-                mbSession.RawIO.Write(String.Format(":SYST:KEY:PRESS {0}", (string)(sender as Button).Tag));
+                mbSession.RawIO.Write(String.Format("{0}", (string)(sender as Button).Tag));
             }
         }
 
@@ -938,11 +951,11 @@ namespace ScopeSnapSharp
             var sr = new System.IO.StreamReader("InstrumentList.xml");
             InstrumentList list = (InstrumentList) xml.Deserialize(sr);
             sr.Close();
-            foreach (Instrument i in list.Instruments)
+            foreach (Instrument inst in list.Instruments)
             {
-                Regex find = new Regex(i.RegularExpressionString);
+                Regex find = new Regex(inst.RegularExpressionString);
                 if (!find.IsMatch(model)) continue;
-                this.myInstrument = i;
+                this.myInstrument = inst;
                 switch (myInstrument.ProcessImageMethod)
                 {
                     case ImageProcessor.GetImage:
@@ -955,11 +968,39 @@ namespace ScopeSnapSharp
                         this.imgGrabFunction = GetRawColorImage;
                         break;
                     default:
+                        this.imgGrabFunction = null;
                         break;
                 }
+
+
+                //update buttons
+                foreach (Button b in quickButtonList)
+                {
+                    //remove it from the form
+                    b.Parent.Controls.Remove(b);
+                }
+                quickButtonList = new Button[myInstrument.Buttons.Length];
+                int i = 0;
+                foreach (ButtonDefinition attr in this.myInstrument.Buttons)
+                {
+                    Button b = new Button
+                    {
+                        Text = attr.Display,
+                        Dock = DockStyle.Fill,
+                        Tag = attr.Command
+                    };
+                    b.Click += CmdSendButtonPress_click;
+                    quickButtonList[i] = b;
+                    tblLayoutButtons.RowStyles.Add(new RowStyle(SizeType.Percent, 100 / QuickList.Count));
+                    tblLayoutButtons.Controls.Add(b, 0, i);
+                    i++;
+
+                }
+
                 return true;
             }
 
+            
 
             MessageBox.Show("This Device is not currently supported but you can use SCPI commands.");
             this.myInstrument = null;
