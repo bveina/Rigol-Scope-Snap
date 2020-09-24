@@ -571,7 +571,12 @@ namespace ScopeSnapSharp
         {
             lock (mbSession)
             {
-                mbSession.RawIO.Write(String.Format("{0}", (string)(sender as Button).Tag));
+                string tag = ((string)(sender as Button).Tag);
+                string[] cmds=tag.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (string c in cmds)
+                {
+                    mbSession.RawIO.Write(String.Format("{0}", c));
+                }
             }
         }
 
@@ -645,9 +650,10 @@ namespace ScopeSnapSharp
                 UpdateScreen(pictureBox1);
                 return;
             }
+            if (!myInstrument.Touch.HasTouch) return;
             ConvertCoordinates(ee.X, ee.Y, out int myX, out int myY);
             if (myX < 0 || myY < 0) return;
-            string txt2Send = string.Format(":SYSTem:TOUCh {0}, {1}", myX, myY);
+            string txt2Send = string.Format(myInstrument.Touch.TouchCommand, myX, myY);
             lock (mbSession)
             {
 
@@ -979,22 +985,25 @@ namespace ScopeSnapSharp
                     //remove it from the form
                     b.Parent.Controls.Remove(b);
                 }
-                quickButtonList = new Button[myInstrument.Buttons.Length];
-                int i = 0;
-                foreach (ButtonDefinition attr in this.myInstrument.Buttons)
+                if (myInstrument.Buttons != null)
                 {
-                    Button b = new Button
+                    quickButtonList = new Button[myInstrument.Buttons.Length];
+                    int i = 0;
+                    foreach (ButtonDefinition attr in this.myInstrument.Buttons)
                     {
-                        Text = attr.Display,
-                        Dock = DockStyle.Fill,
-                        Tag = attr.Command
-                    };
-                    b.Click += CmdSendButtonPress_click;
-                    quickButtonList[i] = b;
-                    tblLayoutButtons.RowStyles.Add(new RowStyle(SizeType.Percent, 100 / QuickList.Count));
-                    tblLayoutButtons.Controls.Add(b, 0, i);
-                    i++;
+                        Button b = new Button
+                        {
+                            Text = attr.Display,
+                            Dock = DockStyle.Fill,
+                            Tag = attr.Command
+                        };
+                        b.Click += CmdSendButtonPress_click;
+                        quickButtonList[i] = b;
+                        tblLayoutButtons.RowStyles.Add(new RowStyle(SizeType.Percent, 100 / QuickList.Count));
+                        tblLayoutButtons.Controls.Add(b, 0, i);
+                        i++;
 
+                    }
                 }
 
                 return true;

@@ -45,6 +45,7 @@
     <GetImageCmd>DISP:DATA?</GetImageCmd>
     <ProcessImageMethod>GetImage</ProcessImageMethod>
     <Touch HasTouch="true" TouchCommand=":SYSTem:TOUCh {0}, {1}"/>
+    
   </Instruments>
   <Instruments DisplayName="Rigol DS1000Z">
     <RegularExpressionString>DS1[0-9][0-9][0-9][ZB]</RegularExpressionString>
@@ -94,18 +95,76 @@
   </Instruments>
   <Instruments DisplayName="Rigol DS1000E">
     <RegularExpressionString>DS1[0-9][0-9][0-9][E]</RegularExpressionString>
+    <Buttons>
+      <Button Display="Measure" Command=":KEY:MEASURE"/>
+      <Button Display="Acquire" Command=":KEY:ACQuire"/>
+      <Button Display="Storage" Command=":KEY:STORage"/>
+      <Button Display="Cursor" Command=":KEY:CURSor"/>
+      <Button Display="Display" Command=":KEY:DISPLAY"/>
+      <Button Display="Utility" Command=":KEY:UTILity"/>
+      <Button Display="Menu Off" Command=":KEY:MNUoff"/>
+      <Button Display="Run/Stop" Command=":KEY:RUN"/>
+      <Button Display="Horiz. Menu" Command=":KEY:MNUTIME"/>
+      <Button Display="Trig. Menu" Command=":KEY:MNUTRIG"/>
+      <Button Display="Chan1" Command=":KEY:CHANnel1"/>
+      <Button Display="Chan2" Command=":KEY:CHANnel2"/>
+      <Button Display="F1" Command=":KEY:F1"/>
+      <Button Display="F2" Command=":KEY:F2"/>
+      <Button Display="F3" Command=":KEY:F3"/>
+      <Button Display="F4" Command=":KEY:F4"/>
+      <Button Display="F5" Command=":KEY:F5"/>
+
+
+    </Buttons>
     <GetImageCmd>:LCD:DATA?</GetImageCmd>
     <ProcessImageMethod>GetRaw8bpp</ProcessImageMethod>
     <Touch HasTouch="false"/>
   </Instruments>
   <Instruments DisplayName="Rigol DL3000">
     <RegularExpressionString>DL3[A]?[0-9][0-9][0-9]</RegularExpressionString>
+    <Buttons>
+      <Button Display="Utility" Command=":DEBUG:KEY ON&#13;:SYSTEM:KEY 9"/>
+      <Button Display="Options" Command=":DEBUG:KEY ON&#13;:SYSTEM:KEY 10"/>
+      <Button Display="Store" Command=":DEBUG:KEY ON&#13;:SYSTEM:KEY 11"/>
+      <Button Display="CC" Command=":DEBUG:KEY ON&#13;:SYSTEM:KEY 0"/>
+      <Button Display="CV" Command=":DEBUG:KEY ON&#13;:SYSTEM:KEY 1"/>
+      <Button Display="CR" Command=":DEBUG:KEY ON&#13;:SYSTEM:KEY 2"/>
+      <Button Display="CP" Command=":DEBUG:KEY ON&#13;:SYSTEM:KEY 3"/>
+      <Button Display="F1" Command=":DEBUG:KEY ON&#13;:SYSTEM:KEY 14"/>
+      <Button Display="F2" Command=":DEBUG:KEY ON&#13;:SYSTEM:KEY 15"/>
+      <Button Display="F3" Command=":DEBUG:KEY ON&#13;:SYSTEM:KEY 16"/>
+      <Button Display="F4" Command=":DEBUG:KEY ON&#13;:SYSTEM:KEY 17"/>
+      <Button Display="F5" Command=":DEBUG:KEY ON&#13;:SYSTEM:KEY 18"/>
+      <Button Display="F6" Command=":DEBUG:KEY ON&#13;:SYSTEM:KEY 16"/>
+      <Button Display="Illuminati" Command=":DEBUG:KEY ON&#13;:SYSTEM:KEY 42"/>
+      <Button Display="ON/OFF" Command=":DEBUG:KEY ON&#13;:SYSTEM:KEY 32"/>
+      <Button Display="OK" Command=":DEBUG:KEY ON&#13;:SYSTEM:KEY 41"/>
+
+
+    </Buttons>
     <GetImageCmd>PROJ:WND:DATA?</GetImageCmd>
     <ProcessImageMethod>GetImage</ProcessImageMethod>
     <Touch HasTouch="false"/>
   </Instruments>
   <Instruments DisplayName="Tektronics TBS2000">
     <RegularExpressionString>TBS2[0-9][0-9][0-9]</RegularExpressionString>
+    <Buttons>
+      <Button Display="ACQuire" Command=":FPAnel:PRESS ACQuire"/>
+      <Button Display="Measure" Command=":FPAnel:PRESS MEASurement"/>
+      <Button Display="Utility" Command=":FPAnel:PRESS UTILity"/>
+      <Button Display="Trigger" Command=":FPAnel:PRESS TRIGger"/>
+      <Button Display="Chan1" Command=":FPAnel:PRESS CH1"/>
+      <Button Display="Chan2" Command=":FPAnel:PRESS CH2"/>
+      <Button Display="Run/Stop" Command=":FPAnel:PRESS RUnstop"/>
+      <Button Display="F1" Command=":FPAnel:PRESS RMENU1"/>
+      <Button Display="F2" Command=":FPAnel:PRESS RMENU2"/>
+      <Button Display="F3" Command=":FPAnel:PRESS RMENU3"/>
+      <Button Display="F4" Command=":FPAnel:PRESS RMENU4"/>
+      <Button Display="F5" Command=":FPAnel:PRESS RMENU5"/>
+      <Button Display="F6" Command=":FPAnel:PRESS RMENU6"/>
+      <Button Display="F7" Command=":FPAnel:PRESS RMENU7"/>
+
+    </Buttons>
     <GetImageCmd>HARDCOPY START</GetImageCmd>
     <ProcessImageMethod>GetJFIF</ProcessImageMethod>
     <Touch HasTouch="false"/>
