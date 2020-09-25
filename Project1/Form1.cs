@@ -159,6 +159,7 @@ namespace ScopeSnapSharp
         [STAThread]
         static void Main()
         {
+            
             Application.Run(new Form1());
         }
 
@@ -255,7 +256,13 @@ namespace ScopeSnapSharp
 
             try
             {
-                if (Settings.Default.LastConnectionSuccessful)
+                string[] args = Environment.GetCommandLineArgs();
+                if ( args.Length>1)
+                {
+                    textBox1.Text = args[1];
+                    this.Connect(textBox1.Text);
+                }
+                else if (Settings.Default.LastConnectionSuccessful)
                 {
                     this.Live = true;
                     this.BeginSearchConnections();
