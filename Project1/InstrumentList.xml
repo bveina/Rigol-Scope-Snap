@@ -146,6 +146,30 @@
     <ProcessImageMethod>GetImage</ProcessImageMethod>
     <Touch HasTouch="false"/>
   </Instruments>
+  <Instruments DisplayName="Rigol DP800">
+    <RegularExpressionString>DP8[0-9][0-9]</RegularExpressionString>
+    <Buttons>
+      <Button Display="Ch1" Command=":INST CH1"/>
+      <Button Display="Ch1 On" Command=":OUTP CH1, ON"/>
+      <Button Display="Ch1 Off" Command=":OUTP CH1, OFF"/>
+
+      <Button Display="Ch2" Command=":INST CH2"/>
+      <Button Display="Ch2 On" Command=":OUTP CH2, ON"/>
+      <Button Display="Ch2 Off" Command=":OUTP CH2, OFF"/>
+
+      <Button Display="Ch3" Command=":INST CH3"/>
+      <Button Display="Ch3 On" Command=":OUTP CH3, ON"/>
+      <Button Display="Ch3 Off" Command=":OUTP CH3, OFF"/>
+
+      <Button Display="Track On" Command=":OUTP:TRACK CH1, ON"/>
+      <Button Display="Track Off" Command=":OUTP:TRACK CH1, OFF"/>
+
+
+    </Buttons>
+    <GetImageCmd>:SYSTEM:PRINT?</GetImageCmd>
+    <ProcessImageMethod>GetImage</ProcessImageMethod>
+    <Touch HasTouch="false"/>
+  </Instruments>
   <Instruments DisplayName="Tektronics TBS2000">
     <RegularExpressionString>TBS2[0-9][0-9][0-9]</RegularExpressionString>
     <Buttons>
