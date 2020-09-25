@@ -195,7 +195,7 @@
     <Content Include="oscope.ico" />
     <Content Include="oscope1.ico" />
     <Content Include="InstrumentList.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>

@@ -169,5 +169,26 @@
     <ProcessImageMethod>GetJFIF</ProcessImageMethod>
     <Touch HasTouch="false"/>
   </Instruments>
+
+  <Instruments DisplayName="Rigol DM3000">
+    <RegularExpressionString>DM3[0-9][0-9][0-9]</RegularExpressionString>
+    <Buttons>
+      <Button Display="local" Command="WEB:KEY:SET 0x40000"/>
+      <Button Display="CONT" Command="FUNC:CONT"/>
+      <Button Display="OHM" Command="FUNC:RES"/>
+      <Button Display="OHM4" Command="FUNC:FRES"/>
+      <Button Display="VDC" Command="FUNC:VOLT:DC"/>
+      <Button Display="VAC" Command="FUNC:VOLT:AC"/>
+      <Button Display="AAC" Command="FUNC:CURR:AC"/>
+      <Button Display="ADC" Command="FUNC:CURR:DC"/>
+      <Button Display="CAP" Command="FUNC:CAP"/>
+      
+
+    </Buttons>
+    <GetImageCmd>:WEBcontrol:GUI:GET?</GetImageCmd>
+    
+    <ProcessImageMethod>GetRaw1bpp</ProcessImageMethod>
+    <Touch HasTouch="false"/>
+  </Instruments>
   
 </InstrumentList>

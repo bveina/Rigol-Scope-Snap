@@ -973,6 +973,9 @@ namespace ScopeSnapSharp
                     case ImageProcessor.GetRaw8bpp:
                         this.imgGrabFunction = GetRawColorImage;
                         break;
+                    case ImageProcessor.GetRaw1bpp:
+                        this.imgGrabFunction = GetRaw1bppImage;
+                        break;
                     default:
                         this.imgGrabFunction = null;
                         break;
@@ -980,11 +983,15 @@ namespace ScopeSnapSharp
 
 
                 //update buttons
+                
                 foreach (Button b in quickButtonList)
                 {
                     //remove it from the form
-                    b.Parent.Controls.Remove(b);
+                    tblLayoutButtons.Controls.Remove(b);
+                    //b.Parent.Controls.Remove(b);
+
                 }
+                tblLayoutButtons.RowStyles.Clear();
                 if (myInstrument.Buttons != null)
                 {
                     quickButtonList = new Button[myInstrument.Buttons.Length];
@@ -1030,6 +1037,50 @@ namespace ScopeSnapSharp
         }
 
 
+        private byte[] GetRaw1bppImage()
+        {
+            string getDataCmd = myInstrument.GetImageCmd;
+            string textToWrite = ReplaceCommonEscapeSequences(getDataCmd);
+            mbSession.RawIO.Write(textToWrite);
+
+            List<byte> results = new List<byte>();
+            byte[] packet;
+            ReadStatus rS;
+            do
+            {
+                packet = mbSession.RawIO.Read((long)Math.Pow(2, 17), out rS);
+                results.AddRange(packet);
+            } while (rS != ReadStatus.EndReceived);
+            return convertRigol1bpp(results);
+        }
+
+        private byte[] convertRigol1bpp(List<byte> data)
+        {
+            int width = 256;
+            int widthInBytes = width / 8;
+            int height = 64;
+            Bitmap image = new Bitmap(width, height, PixelFormat.Format1bppIndexed);
+            BitmapData bmpData = image.LockBits(new Rectangle(0, 0, width, height), System.Drawing.Imaging.ImageLockMode.WriteOnly, image.PixelFormat);
+            int stride = bmpData.Stride;
+            int temp = 0;
+            unsafe
+            {
+                byte* row = (byte*)bmpData.Scan0;
+                for (int r = 0; r < height; r++)
+                {
+                    for (int c = 0; c < widthInBytes; c++ )
+                    {
+                        
+                        row[c] = data[r * widthInBytes + c];
+                        temp += 8;
+                    }
+                    row += stride;
+                }
+
+            }
+            image.UnlockBits(bmpData);
+            return ImageToByte2(image);
+        }
 
         private byte[] GetRawColorImage()
         {
@@ -1060,6 +1111,7 @@ namespace ScopeSnapSharp
 
             BitmapData bmpData = image.LockBits(new Rectangle(0, 0, width, height), System.Drawing.Imaging.ImageLockMode.WriteOnly, image.PixelFormat);
             int stride = bmpData.Stride;
+            
             unsafe
             {
                 int* row = (int*)bmpData.Scan0;
