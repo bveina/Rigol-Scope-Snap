@@ -13,6 +13,7 @@ buttons and the touchscreen interface.
 - [Saving to a File ](#saving-images-shortcut-ctrls)
 - [Copying to Clipboard](#copying-images-shortcut-ctrlc)
 - [Using the SCPI interface](#scpi-interface)
+- [Extending to new Devices](#extending-to-new-devices)
 
 # Installing
 This app relies on the NI runtime available: https://www.ni.com/en-us/support/downloads/drivers/download.ni-visa.html
@@ -107,3 +108,21 @@ DISPlay:COLor ON
 
 
 Multiple Queries can also be accomplished in the same way.
+
+## Extending to new devices
+As of Version 1.6 you can augment an `InstrumentList.xml` file to add support for new devices.
+The Schema is included in the repo but it is also possible to just copy an existing similar instrument and then tweak it for your purposes. this file is loaded Dynamically at runtime to try to identify what type of device is being connected to.
+
+Every instrument should have:
+- A RegularExpressionString to identify it uniquely. (eg `MSO5[0-9][0-9][0-9]`)
+- The SCPI command used to query the image from the device (eg `DISP:DATA?`)
+- An enumeration for processing the raw bytestream that is returned for the SCPI query.
+ - these are limited to GetImage, GetJFIF, GetRaw8bpp, GetRaw1bpp
+  - GetImage assumes a TMC packet with a full bmp file being transmitted.
+  - GetJFIF assumes a full jpg file from the instrument.
+  - GetRaw8bpp assumes a data-stream of pixel data with no header in RR GGG BBB format.
+  - GetRaw1bpp assumes a data-stream of pixel data with no header with 1 bit per pixel
+- A list of button that should be shown in the side panel. each button should have two attributes.
+ - Display: the user friendly name of the button.
+ - Command: the SCPI command that will be sent when you press the virtual button.
+- other items are listed in the schema `SCPI-instrument-definition.xsd`
