@@ -1310,9 +1310,8 @@ namespace ScopeSnapSharp
             SaveFileDialog sf = new SaveFileDialog()
             {
                 Filter = "Portable Network Graphic (*.png)|*.png|Bitmap (*.bmp)|*.bmp|All Files (*.*)|*.*",
-            DefaultExt = "png",
-            AddExtension = true,
-            
+                DefaultExt = "png",
+                AddExtension = true,
             };
             DialogResult d = sf.ShowDialog();
 
@@ -1324,7 +1323,7 @@ namespace ScopeSnapSharp
             MemoryStream ms = new MemoryStream();
             ms.Write(tmpPacket, 0, Convert.ToInt32(tmpPacket.Length));
             Bitmap tmp = new Bitmap(ms, false);
-            if (Path.GetExtension(filename) != "png")
+            if (Path.GetExtension(filename) != ".png")
                 tmp.Save(filename, ImageFormat.Bmp);
             else
                 tmp.Save(filename, ImageFormat.Png);
