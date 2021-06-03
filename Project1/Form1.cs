@@ -318,9 +318,6 @@ namespace ScopeSnapSharp
                 byte[] tmpPacket = null;
                 try
                 {
-
-                    //tmpPacket = getImage();
-                    //tmpPacket = getJFIFImage();
                     tmpPacket = this.imgGrabFunction();
                 }
                 catch (ArgumentException ex)
@@ -972,7 +969,7 @@ namespace ScopeSnapSharp
                 switch (myInstrument.ProcessImageMethod)
                 {
                     case ImageProcessor.GetImage:
-                        this.imgGrabFunction = GetImage;
+                        this.imgGrabFunction = GetTMCBitmap;
                         break;
                     case ImageProcessor.GetJFIF:
                         this.imgGrabFunction = GetJFIFImage;
@@ -1098,14 +1095,7 @@ namespace ScopeSnapSharp
             string textToWrite = ReplaceCommonEscapeSequences(getDataCmd);
             mbSession.RawIO.Write(textToWrite);
 
-            List<byte> results = new List<byte>();
-            byte[] packet;
-            ReadStatus rS;
-            do
-            {
-                packet = mbSession.RawIO.Read((long)Math.Pow(2,17), out rS);
-                results.AddRange(packet);
-            } while (rS != ReadStatus.EndReceived);
+            List<byte> results = RawReadAll(mbSession);
             return convertRigol8bpp(results);
         }
 
@@ -1133,7 +1123,7 @@ namespace ScopeSnapSharp
 
         public int convert8bppTo32bpp(byte x)
         {
-            // warning: these variable names give the correct colors in the end but i was swappning things around so often because of the undocumented bit patter of the data, 
+            // warning: these variable names give the correct colors in the end but i was swappning things around so often because of the undocumented bit pattern of the data, 
             // there may be an instance where i swaped things twice, and that results in the correct things.
             // you have been warned, red may not actually be red, but it puts it into the correct byte posision.
             // RR GGG BBB --> 0000 0000 RR00 0000 GGG0 0000 BBB0 0000
@@ -1165,60 +1155,68 @@ namespace ScopeSnapSharp
         // can be run from a background thread.
         private byte[] GetJFIFImage()
         {
-            //string getDataCmd = "DISP:DATA?"; // mso5000
-            //string getDataCmd = "DISP:DATA? ON,ON,BMP"; //DS1054Z
             string getDataCmd = myInstrument.GetImageCmd;
-
+            string textToWrite = ReplaceCommonEscapeSequences(getDataCmd);
 
             mbSession.RawIO.Write(ReplaceCommonEscapeSequences("*CLS"));
-            //mbSession.TimeoutMilliseconds = 10 * 1000;
-            string textToWrite = ReplaceCommonEscapeSequences(getDataCmd);
             mbSession.RawIO.Write(textToWrite);
-            List<byte> results = new List<byte>();
-            //byte[] packet = new byte[8192];
-            byte[] packet;
-            ReadStatus rS;
-            do
-            {
-                packet = mbSession.RawIO.Read(32768, out rS);
-                results.AddRange(packet);
-            } while (rS != ReadStatus.EndReceived);
+            List<byte> results = RawReadAll(mbSession);
             return results.ToArray();
         }
 
         // retrieve an image from the instrument. can be run from a background thread.
         // excpects that it already has a lock on mbSession.
-        private byte[] GetImage()
+        private byte[] GetTMCBitmap()
         {
-            //todo: could this be solved by querying ReadStatus similar to how getJFIF workes?
-            //string getDataCmd = "DISP:DATA?"; // mso5000
-            //string getDataCmd = "DISP:DATA? ON,ON,BMP"; //DS1054Z
             string getDataCmd = myInstrument.GetImageCmd;
-
-
             mbSession.RawIO.Write(ReplaceCommonEscapeSequences("*CLS"));
-            //mbSession.TimeoutMilliseconds = 10 * 1000;
             string textToWrite = ReplaceCommonEscapeSequences(getDataCmd);
             mbSession.RawIO.Write(textToWrite);
-            byte[] tmcSize = mbSession.RawIO.Read(2);
+            // RawRead will sleep internally if no data is present.
+            // but for profiling, adding a sleep here make the response time
+            // of the RawIO reads more meaningful.
+            //System.Threading.Thread.Sleep(500); 
+            byte[] result = RawReadAllTMC();
+            return result;
+            
+        }
+
+
+        private byte[] RawReadAllTMC()
+        {
+            Ivi.Visa.ReadStatus stat;
+            // some instruments can't respond to small reads so read an entire packet
+            // then put the leftovers into the result
+            byte[] tmcSize = mbSession.RawIO.Read(32768);
+            
+            //calculate the TMC Header size
             if (tmcSize[0] != '#')
             {
                 throw new ArgumentException("Error while grabbing screen: Bad tmcSize");
             }
-            int tmcHeaderSize = tmcSize[1] - '0';
-            byte[] packetSizeString = mbSession.RawIO.Read(tmcHeaderSize);
+            int tmcHeaderSize = tmcSize[1] - '0'; // convert the char to an int, quickly.            
 
-            if (!int.TryParse(System.Text.Encoding.ASCII.GetString(packetSizeString), out int packetSize))
+            // calculate the TMC packet Size
+            byte[] packetSizeArray = new byte[tmcHeaderSize];
+            Array.Copy(tmcSize, 2, packetSizeArray, 0, tmcHeaderSize);
+            string packetSizeString = System.Text.Encoding.ASCII.GetString(packetSizeArray);
+            if (!int.TryParse(packetSizeString, out int packetSize))
             {
-                throw new ArgumentException(string.Format("Error while parsing packet size: {0}", System.Text.Encoding.ASCII.GetString(packetSizeString)));
+                throw new ArgumentException(string.Format("Error while parsing packet size: {0}", packetSizeString));
             }
-            //int packetSize = int.Parse(System.Text.Encoding.ASCII.GetString(packetSizeString));
+
+            // preallocate the entire packet.
             byte[] packet = new byte[packetSize];
 
+            // now handle the leftovers we have read
+            int dataSize = tmcSize.Length - (2 + tmcHeaderSize);
+            Array.Copy(tmcSize, 2 + tmcHeaderSize, packet, 0, dataSize);
+            
+            // read the rest of the packet
+            long totalRead = dataSize;
             long blocksize = (long)Math.Pow(2, 16);
-            long totalRead = 0;
             long currentRead;
-            Ivi.Visa.ReadStatus stat;
+
             while (totalRead < packetSize)
             {
                 if (blocksize < (packetSize - totalRead))
@@ -1230,6 +1228,23 @@ namespace ScopeSnapSharp
             return packet;
         }
 
+
+        // This method can be used any time youneed all the data in a response that is not ascii in nature.
+        // however, this has no bounds checking, so use RawReadTMC if there is a header that shows how big a response will be.
+        private static List<byte> RawReadAll(MessageBasedSession mb)
+        {
+            
+            List<byte> results = new List<byte>();
+            byte[] packet;
+            ReadStatus rS;
+            do
+            {
+                // hardcode the max buffer size to force it to try to read past the end.
+                packet = mb.RawIO.Read(32768, out rS);
+                results.AddRange(packet);
+            } while (rS != ReadStatus.EndReceived);
+            return results;
+        }
 
         // 2d XY scaling of coordinates.
         private void ConvertCoordinates(int ClickX, int ClickY, out int imageX, out int imageY)
