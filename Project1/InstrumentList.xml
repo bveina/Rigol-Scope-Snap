@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <InstrumentList
  xmlns="http://tempuri.org/SCPI-instrument-definition.xsd"
    xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -91,6 +91,18 @@
 
 
   </Instruments>
+
+  <Instruments DisplayName="Rigol DG800" >
+    <RegularExpressionString>DG[89][0-9][0-9]</RegularExpressionString>
+    <Buttons>
+    </Buttons>
+    <GetImageCmd>:HCOPy:SDUMp:DATA?</GetImageCmd>
+    <ProcessImageMethod>GetImage</ProcessImageMethod>
+    <!--<Touch HasTouch="true" TouchCommand=":SYSTem:TOUCh {0}, {1}"/> -->
+    <Touch HasTouch="false"/>
+
+  </Instruments>
+  
   <Instruments DisplayName="Rigol DS1000E">
     <RegularExpressionString>DS1[0-9][0-9][0-9][E]</RegularExpressionString>
     <Buttons>
