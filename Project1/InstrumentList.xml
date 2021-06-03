@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <InstrumentList
  xmlns="http://tempuri.org/SCPI-instrument-definition.xsd"
    xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -47,8 +47,8 @@
     <Touch HasTouch="true" TouchCommand=":SYSTem:TOUCh {0}, {1}"/>
     
   </Instruments>
-  <Instruments DisplayName="Rigol DS1000Z">
-    <RegularExpressionString>DS1[0-9][0-9][0-9][ZB]</RegularExpressionString>
+  <Instruments DisplayName="Rigol MSO/DS1000Z">
+    <RegularExpressionString>[DS|MSO]1[0-9][0-9][0-9][ZB]</RegularExpressionString>
     <Invert>
       <Query>:STORAGE:IMAGE:INVERT?</Query>
       <OnCommand>:STORAGE:IMAGE:INVERT ON</OnCommand>
@@ -76,8 +76,6 @@
       <Button Display="Math" Command=":SYST:KEY:PRESS MATH"/>
       <Button Display="Decode" Command=":SYST:KEY:PRESS DECode"/>
       <Button Display="Trigger" Command=":SYST:KEY:PRESS TMENu"/>
-      <Button Display="G I" Command=":SYST:KEY:PRESS GENerator1"/>
-      <Button Display="G II" Command=":SYST:KEY:PRESS GENerator2"/>
       <Button Display="Search" Command=":SYST:KEY:PRESS SEARch"/>
       <Button Display="Zoom" Command=":SYST:KEY:PRESS ZOOM"/>
       <Button Display="Quick" Command=":SYST:KEY:PRESS QUICk"/>
