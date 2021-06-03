@@ -1,4 +1,4 @@
-﻿using NationalInstruments.Visa;
+using NationalInstruments.Visa;
 using ScopeSnapSharp.Properties;
 using System;
 using System.Collections.Generic;
@@ -490,7 +490,7 @@ namespace ScopeSnapSharp
             else if (ResourceList.Count != 0)
             {
                 listBox1.SelectedIndex = 0;
-                textBox1.Text = (string)ResourceList[0];
+                textBox1.Text = (string) listBox1.SelectedItem;
                 SetMessage("Multiple Instruments Found, Please Select one and click connect.");
                 //listBox1.SelectedIndex = 0;
             }
