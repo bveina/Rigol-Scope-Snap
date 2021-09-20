@@ -128,9 +128,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="SCPI-instrument-definition.xsd">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="SCPI-instrument-definition.xsd" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Form1.cs">
@@ -224,6 +222,8 @@ if $(PlatformName)==x64 if $(ConfigurationName)==Release (copy "$(TargetPath)" "
 </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>"C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\x64\xsd.exe" $(ProjectDir)SCPI-instrument-definition.xsd /classes</PreBuildEvent>
+    <PreBuildEvent>cd ..\..
+"C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6.1 Tools\x64\xsd.exe" /c $(ProjectDir)\SCPI-instrument-definition.xsd 
+cd bin\x64</PreBuildEvent>
   </PropertyGroup>
 </Project>

@@ -14,6 +14,7 @@ buttons and the touchscreen interface.
 - [Copying to Clipboard](#copying-images-shortcut-ctrlc)
 - [Using the SCPI interface](#scpi-interface)
 - [Extending to new Devices](#extending-to-new-devices)
+- [Building from Source](#building-from-source)
 
 # Installing
 This app relies on the NI runtime available: https://www.ni.com/en-us/support/downloads/drivers/download.ni-visa.html
@@ -126,3 +127,9 @@ Every instrument should have:
  - Display: the user friendly name of the button.
  - Command: the SCPI command that will be sent when you press the virtual button.
 - other items are listed in the schema `SCPI-instrument-definition.xsd`
+
+## Building from source
+
+I'd like to thing that if you have Visual Studio installed on your machine, it should be as easy as hitting Build.
+but the most likely stumbling block will be generating ```SCPI-instrument-definition.cs``` this is done with the XSD tool that comes with Visual Studio.
+there is a prebuild step to auto generate the file before build time but the path to XSD.exe is hardcoded ``` C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6.1 Tools\x64\xsd.ex``` should be changed to point to your installed netfx tools location.
