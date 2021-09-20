@@ -1091,19 +1091,23 @@ namespace ScopeSnapSharp
             // dont be fooled byt the loop. on the Rigol 1102E, if you dont get everything all at once it all breaks.
             // make sure that the packet size is larger than the image.
             // also, you cant rely on the TMC header, because you need to get everything in one shot.
+            // this is such a pain in the ass, it cant rely on RawRead All because the image is bigger than the default size of 32786
             string getDataCmd = myInstrument.GetImageCmd;
             string textToWrite = ReplaceCommonEscapeSequences(getDataCmd);
             mbSession.RawIO.Write(textToWrite);
 
-            List<byte> results = RawReadAll(mbSession);
+            List<byte> results = RawReadAll(mbSession,32,32768);
+            //List<byte> results = new List<byte>(RawReadAllTMC());
             return convertRigol8bpp(results);
         }
 
         private byte[] convertRigol8bpp(List<byte> data)
         {
+            // this will leave the first "skip" bytes empty. 
+            // oh well. the DS1XXXE series should die in a fire.
             int height = 234;
             int width = 320;
-            int skip = 10;
+            int skip = 10;// skip the first ten bytes since they contain the TMC Header
             Bitmap image = new Bitmap(320, 234, PixelFormat.Format32bppArgb);
 
             BitmapData bmpData = image.LockBits(new Rectangle(0, 0, width, height), System.Drawing.Imaging.ImageLockMode.WriteOnly, image.PixelFormat);
@@ -1113,8 +1117,13 @@ namespace ScopeSnapSharp
             {
                 int* row = (int*)bmpData.Scan0;
                 
-                for (int i=0;i<width*height;i++)
-                    row[i] = convert8bppTo32bpp(data[i + skip]);
+                for (int i=skip;i<width*height;i++)
+                {
+                    if (i >= data.Count) continue; // incase of mistakes.. (not forshadowing.)
+                    row[i] = convert8bppTo32bpp(data[i]);
+                    
+                }
+                    
               
             }
             image.UnlockBits(bmpData);
@@ -1231,18 +1240,22 @@ namespace ScopeSnapSharp
 
         // This method can be used any time youneed all the data in a response that is not ascii in nature.
         // however, this has no bounds checking, so use RawReadTMC if there is a header that shows how big a response will be.
-        private static List<byte> RawReadAll(MessageBasedSession mb)
+        private static List<byte> RawReadAll(MessageBasedSession mb,long firstPacket=32768,long packetSize=32768)
         {
             
             List<byte> results = new List<byte>();
             byte[] packet;
             ReadStatus rS;
-            do
-            {
-                // hardcode the max buffer size to force it to try to read past the end.
-                packet = mb.RawIO.Read(32768, out rS);
+
+            packet = mb.RawIO.Read(firstPacket, out rS);
+            results.AddRange(packet);
+            while (rS != ReadStatus.EndReceived)
+            { 
+                
+                packet = mb.RawIO.Read(packetSize, out rS);
                 results.AddRange(packet);
-            } while (rS != ReadStatus.EndReceived);
+            }
+            
             return results;
         }
 
